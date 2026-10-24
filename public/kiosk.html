@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ezForme Terminal - 현장 인쇄 키오스크</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🖨️</text></svg>">
+  <style>
+    body {
+      padding: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .kiosk-fullscreen-container {
+      width: 100%;
+      max-width: 880px;
+    }
+  </style>
+</head>
+<body>
+  <div class="kiosk-fullscreen-container">
+    <section class="glass-panel" style="padding: 32px;">
+      <!-- Header -->
+      <div class="panel-header">
+        <div class="logo-badge">
+          <div class="logo-icon">🖨️</div>
+          <div>
+            <h1 class="brand-title">ezForme Terminal</h1>
+            <p class="brand-subtitle">드라이버 설치 없는 초간편 무인 인쇄 스테이션</p>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <button id="soundToggleBtn" class="btn-sample-file" style="padding: 6px 14px; font-size: 12px;">🔊 사운드 ON</button>
+          <div class="header-status-pill">
+            <div id="connStatusDot" class="status-dot-pulse"></div>
+            <span>정상 가동 중</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- QR 안내 영역 -->
+      <div class="kiosk-hero-qr">
+        <div class="qr-frame">
+          <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100" height="100" fill="white"/>
+            <!-- Corner 1 -->
+            <rect x="10" y="10" width="28" height="28" fill="#0f172a"/>
+            <rect x="16" y="16" width="16" height="16" fill="white"/>
+            <rect x="20" y="20" width="8" height="8" fill="#0f172a"/>
+            <!-- Corner 2 -->
+            <rect x="62" y="10" width="28" height="28" fill="#0f172a"/>
+            <rect x="68" y="16" width="16" height="16" fill="white"/>
+            <rect x="72" y="20" width="8" height="8" fill="#0f172a"/>
+            <!-- Corner 3 -->
+            <rect x="10" y="62" width="28" height="28" fill="#0f172a"/>
+            <rect x="16" y="68" width="16" height="16" fill="white"/>
+            <rect x="20" y="72" width="8" height="8" fill="#0f172a"/>
+            <!-- Data Blocks -->
+            <rect x="44" y="12" width="8" height="16" fill="#0f172a"/>
+            <rect x="44" y="34" width="12" height="8" fill="#0f172a"/>
+            <rect x="14" y="44" width="8" height="12" fill="#0f172a"/>
+            <rect x="30" y="44" width="16" height="8" fill="#0f172a"/>
+            <rect x="60" y="44" width="14" height="14" fill="#0f172a"/>
+            <rect x="44" y="62" width="8" height="24" fill="#0f172a"/>
+            <rect x="60" y="68" width="14" height="8" fill="#0f172a"/>
+            <rect x="78" y="62" width="12" height="12" fill="#0f172a"/>
+            <rect x="78" y="80" width="12" height="8" fill="#0f172a"/>
+          </svg>
+        </div>
+        <div class="qr-desc">
+          <h4 style="font-size: 18px; margin-bottom: 6px;">스마트폰 기본 카메라로 QR을 스캔하세요</h4>
+          <p style="font-size: 13px;">드라이버나 앱 설치 없이 스마트폰에서 문서를 바로 업로드할 수 있습니다.<br>
+          스마트폰 화면에 표시된 <b>6자리 PIN 번호</b>를 아래 키패드에 입력해 주세요.</p>
+        </div>
+      </div>
+
+      <!-- PIN Touch Numpad -->
+      <div class="pin-numpad-section">
+        <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px; font-weight: 500;">
+          인쇄 보안 핀코드(PIN) 6자리 입력:
+        </div>
+        <div id="pinDisplayBox" class="pin-display-box" style="font-size: 34px; letter-spacing: 16px;">______</div>
+
+        <div class="numpad-grid">
+          <button class="num-btn" data-num="1">1</button>
+          <button class="num-btn" data-num="2">2</button>
+          <button class="num-btn" data-num="3">3</button>
+          <button class="num-btn" data-num="4">4</button>
+          <button class="num-btn" data-num="5">5</button>
+          <button class="num-btn" data-num="6">6</button>
+          <button class="num-btn" data-num="7">7</button>
+          <button class="num-btn" data-num="8">8</button>
+          <button class="num-btn" data-num="9">9</button>
+          <button class="num-btn" data-num="clear" style="color: #f87171; font-size: 15px;">전체삭제</button>
+          <button class="num-btn" data-num="0">0</button>
+          <button class="num-btn" data-num="back" style="color: #fbbf24; font-size: 16px;">⌫ 지움</button>
+          <button id="btnKioskPrint" class="num-btn btn-action-print" style="padding: 18px 0; font-size: 18px;">
+            🖨️ 인쇄물 출력하기 (Print Now)
+          </button>
+        </div>
+      </div>
+
+      <!-- Hardware Print Engine Simulator -->
+      <div class="printer-hardware-box">
+        <div class="printer-top-bar">
+          <span>Physical / Virtual Hardware Spooler Engine</span>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span id="printerLed" class="printer-led"></span>
+            <span id="printerStatusText" style="color: #34d399; font-weight: 600;">[정상 대기] Ready</span>
+          </div>
+        </div>
+        
+        <div class="paper-slot">
+          <div id="ejectingPaper" class="ejecting-paper">
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #cbd5e1; padding-bottom: 4px; margin-bottom: 6px;">
+              <b>ezForme Output</b>
+              <span style="color: #64748b;">SUCCESS</span>
+            </div>
+            <div id="ejectedDocTitle" style="font-weight: 700; color: #0284c7;">문서명 출력 중...</div>
+            <div style="font-size: 10px; color: #94a3b8; margin-top: 4px;">Zero Driver • Direct Spooling OK</div>
+          </div>
+        </div>
+
+        <div style="font-size: 12px; color: var(--text-dim); text-align: center;">
+          CUPS / RAW 9100 Direct Port 통신 활성화 상태
+        </div>
+      </div>
+
+      <!-- Recent Jobs Ledger -->
+      <div style="margin-top: 24px;">
+        <div style="font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px;">
+          📋 실시간 인쇄 처리 현황
+        </div>
+        <div id="historyList" class="history-list"></div>
+      </div>
+    </section>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

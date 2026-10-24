@@ -1,0 +1,1787 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ezForme IR Pitch Deck - 제로 드라이버 무선 클라우드 프린팅 플랫폼</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Pretendard:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: 297mm 210mm; /* A4 Landscape */
+      margin: 0;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      box-shadow: none !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      background-color: #f1f5f9;
+      color: #0f172a;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      line-height: 1.45;
+      margin: 0;
+      padding: 0;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+    }
+
+    .slide {
+      width: 297mm;
+      height: 208mm;
+      max-height: 208mm;
+      min-height: 208mm;
+      page-break-after: always;
+      break-after: page;
+      position: relative;
+      overflow: hidden;
+      padding: 14mm 20mm 12mm 20mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: #ffffff;
+      word-break: keep-all;
+    }
+
+    .slide:last-child {
+      page-break-after: avoid;
+      break-after: avoid;
+    }
+
+    /* Common Header */
+    .slide-header {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 3.5mm;
+      width: 100%;
+    }
+
+    .category-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 26px;
+      line-height: 1;
+      padding: 2px 12px 0 12px; /* optical vertical center */
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #0284c7;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      margin-bottom: 4px;
+      box-sizing: border-box;
+    }
+
+    .slide-title {
+      font-family: 'Outfit', 'Pretendard', sans-serif;
+      font-size: 23px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+      line-height: 1.35;
+      word-break: keep-all;
+      margin-top: 2px;
+      padding-bottom: 2px;
+    }
+
+    /* Crisp solid highlight without background-clip artifacts */
+    .slide-title span.highlight {
+      color: #0284c7;
+      font-weight: 800;
+    }
+
+    .brand-mark {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      color: #475569;
+    }
+
+    .brand-mark-logo {
+      width: 26px;
+      height: 26px;
+      background: #0284c7;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #ffffff;
+      font-weight: 900;
+    }
+
+    /* Common Content Area */
+    .slide-body {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      word-break: keep-all;
+    }
+
+    /* Common Footer */
+    .slide-footer {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 3mm;
+      border-top: 1px solid #e2e8f0;
+      font-size: 11px;
+      color: #64748b;
+    }
+
+    .slide-footer .confidential {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .slide-footer .page-number {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    /* Utility Cards & Grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      box-shadow: none !important;
+      word-break: keep-all;
+    }
+
+    .card.glow-primary {
+      border: 1.5px solid #bae6fd;
+      background: #f8fafc;
+      box-shadow: none !important;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      word-break: keep-all;
+    }
+
+    .card-desc {
+      font-size: 11.5px;
+      color: #475569;
+      line-height: 1.5;
+      word-break: keep-all;
+    }
+
+    /* Centered Badges with Optical Centering */
+    .pill-tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 26px;
+      line-height: 1;
+      padding: 2px 10px 0 10px; /* optical vertical center */
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      box-sizing: border-box;
+    }
+    .pill-danger { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+    .pill-success { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+    .pill-info { background: #f0f9ff; color: #0284c7; border: 1px solid #bae6fd; }
+    .pill-warn { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
+
+    /* ==========================================
+       SLIDE 1: COVER
+       ========================================== */
+    .cover-slide {
+      padding: 20mm 22mm 16mm 22mm;
+      background: #ffffff;
+    }
+
+    .cover-container {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 32px;
+      align-items: center;
+      height: 100%;
+    }
+
+    .cover-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      word-break: keep-all;
+    }
+
+    .cover-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .cover-badge-row .category-badge,
+    .cover-badge-row .pill-tag {
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 12px;
+      line-height: normal;
+      box-sizing: border-box;
+      font-size: 11px;
+    }
+
+    .cover-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 46px;
+      font-weight: 900;
+      line-height: 1.05;
+      color: #0f172a;
+      letter-spacing: -1.5px;
+      margin-bottom: 10px;
+    }
+
+    .cover-title .gradient-text {
+      color: #0284c7;
+      font-weight: 900;
+    }
+
+    .cover-subtitle {
+      font-size: 20px;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 10px;
+      line-height: 1.35;
+      word-break: keep-all;
+    }
+
+    .cover-desc {
+      font-size: 13px;
+      color: #475569;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      word-break: keep-all;
+    }
+
+    .cover-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      max-width: 420px;
+      margin-bottom: 20px;
+    }
+
+    .cover-metric-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 8px 10px;
+      text-align: left;
+    }
+
+    .cover-metric-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: #0284c7;
+      line-height: 1.2;
+    }
+
+    .cover-metric-label {
+      font-size: 10.5px;
+      color: #64748b;
+      font-weight: 600;
+      margin-top: 2px;
+      word-break: keep-all;
+      white-space: nowrap;
+    }
+
+    .cover-right {
+      position: relative;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      width: 100%;
+    }
+
+    .hero-image-frame {
+      width: 100%;
+      max-width: 350px;
+      aspect-ratio: 16 / 10;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid #cbd5e1;
+      box-shadow: none !important;
+      position: relative;
+    }
+
+    .hero-image-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .hero-overlay-tag {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      right: 8px;
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 11px;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* ==========================================
+       SLIDE 2: BACKGROUND & PAIN POINTS
+       ========================================== */
+    .genesis-banner {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 12px;
+      padding: 10px 16px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      word-break: keep-all;
+    }
+
+    .genesis-icon {
+      font-size: 22px;
+      line-height: 1.2;
+    }
+
+    .genesis-content {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .genesis-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #0284c7;
+    }
+
+    .genesis-desc {
+      font-size: 12px;
+      color: #334155;
+      line-height: 1.5;
+      word-break: keep-all;
+    }
+
+    .pain-card {
+      background: #ffffff;
+      border: 1px solid #fecaca;
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: none !important;
+      word-break: keep-all;
+    }
+
+    .pain-card.highlight-blue {
+      border: 1px solid #bae6fd;
+      box-shadow: none !important;
+    }
+
+    .pain-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 12px;
+      color: #334155;
+      line-height: 1.45;
+      word-break: keep-all;
+    }
+
+    .pain-bullet {
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10.5px;
+      color: #dc2626;
+      font-weight: 800;
+      margin-top: 2px;
+    }
+
+    .pain-bullet.blue {
+      background: #f0f9ff;
+      border-color: #bae6fd;
+      color: #0284c7;
+    }
+
+    /* ==========================================
+       SLIDE 3: SOLUTION & 4-ZERO
+       ========================================== */
+    .zero-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      box-shadow: none !important;
+      word-break: keep-all;
+    }
+
+    .zero-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: #0284c7;
+    }
+
+    .zero-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 24px;
+      font-weight: 900;
+      color: #0284c7;
+      margin-bottom: 2px;
+      letter-spacing: -1px;
+    }
+
+    .zero-title {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 2px;
+      word-break: keep-all;
+    }
+
+    .zero-sub {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #0284c7;
+      margin-bottom: 4px;
+      word-break: keep-all;
+    }
+
+    .zero-benefit {
+      margin-top: 8px;
+      padding-top: 6px;
+      border-top: 1px solid #f1f5f9;
+      font-size: 10.5px;
+      color: #0369a1;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      word-break: keep-all;
+    }
+
+    /* ==========================================
+       SLIDE 4: ARCHITECTURE & UX FLOW
+       ========================================== */
+    .step-box {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 12px 10px;
+      text-align: center;
+      position: relative;
+      box-shadow: none !important;
+      word-break: keep-all;
+    }
+
+    .step-badge {
+      display: inline-block;
+      width: 22px;
+      height: 22px;
+      line-height: 22px;
+      background: #0284c7;
+      color: #ffffff;
+      font-weight: 900;
+      border-radius: 50%;
+      font-size: 11px;
+      margin-bottom: 6px;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .step-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 3px;
+      word-break: keep-all;
+    }
+
+    .step-desc {
+      font-size: 11.5px;
+      color: #475569;
+      line-height: 1.4;
+      word-break: keep-all;
+    }
+
+    .arch-diagram-card {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-top: 10px;
+      word-break: keep-all;
+    }
+
+    .arch-flow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 6px 0;
+    }
+
+    .arch-node {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 6px 8px;
+      text-align: center;
+      flex: 1;
+      box-shadow: none !important;
+      word-break: keep-all;
+    }
+
+    .arch-node.core {
+      background: #f0f9ff;
+      border-color: #38bdf8;
+    }
+
+    .arch-node-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #0f172a;
+      word-break: keep-all;
+    }
+
+    .arch-node-sub {
+      font-size: 9.5px;
+      color: #64748b;
+      margin-top: 2px;
+      word-break: keep-all;
+    }
+
+    .arch-arrow {
+      color: #0284c7;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    /* Architecture 3 mini-cards with separated title on top and description below */
+    .arch-feature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .arch-feature-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .arch-feature-title {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #0284c7;
+      margin-bottom: 2px;
+      display: block;
+    }
+
+    .arch-feature-desc {
+      font-size: 10.5px;
+      color: #475569;
+      line-height: 1.35;
+      word-break: keep-all;
+      display: block;
+    }
+
+    /* ==========================================
+       SLIDE 5: TARGET MARKET
+       ========================================== */
+    .market-stat-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: none !important;
+      word-break: keep-all;
+    }
+
+    .market-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 26px;
+      font-weight: 900;
+      color: #0284c7;
+      line-height: 1;
+      margin-bottom: 3px;
+    }
+
+    .market-label {
+      font-size: 13px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 3px;
+      word-break: keep-all;
+    }
+
+    .market-desc {
+      font-size: 11px;
+      color: #475569;
+      line-height: 1.4;
+      word-break: keep-all;
+    }
+
+    .market-source-tag {
+      font-size: 9.5px;
+      color: #64748b;
+      margin-top: 3px;
+      font-style: italic;
+    }
+
+    .market-badge {
+      display: inline-block;
+      align-self: flex-start;
+      margin-top: 6px;
+      font-size: 9.5px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      color: #0284c7;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* ==========================================
+       SLIDE 6: BUSINESS MODEL & UNIT ECONOMICS
+       ========================================== */
+    .bm-track-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 10px 14px;
+      box-shadow: none !important;
+      word-break: keep-all;
+    }
+
+    .bm-price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin: 4px 0 6px 0;
+    }
+
+    .bm-price-big {
+      font-family: 'Outfit', sans-serif;
+      font-size: 24px;
+      font-weight: 900;
+      color: #0284c7;
+    }
+
+    .bm-price-unit {
+      font-size: 11px;
+      color: #64748b;
+    }
+
+    .bm-split-bar {
+      width: 100%;
+      height: 7px;
+      background: #e2e8f0;
+      border-radius: 9999px;
+      overflow: hidden;
+      display: flex;
+      margin-bottom: 5px;
+    }
+
+    .split-platform { background: #0284c7; width: 40%; }
+    .split-owner { background: #16a34a; width: 60%; }
+
+    .split-legend {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10.5px;
+      color: #334155;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .economics-strip {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 10px;
+      padding: 8px 12px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      text-align: center;
+      margin-top: 10px;
+      word-break: keep-all;
+    }
+
+    .econ-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      color: #16a34a;
+    }
+
+    .econ-label {
+      font-size: 10px;
+      color: #475569;
+      margin-top: 2px;
+      word-break: keep-all;
+    }
+
+    /* ==========================================
+       SLIDE 7: COMPETITIVE MOAT
+       ========================================== */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      text-align: left;
+      margin-top: 4px;
+      word-break: keep-all;
+    }
+
+    .compare-table th {
+      padding: 6px 8px;
+      background: #f8fafc;
+      color: #475569;
+      font-weight: 700;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .compare-table th.ez-col {
+      background: #f0f9ff;
+      color: #0284c7;
+      border-bottom: 2px solid #0284c7;
+    }
+
+    .compare-table td {
+      padding: 5.5px 8px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+    }
+
+    .compare-table tr:hover td {
+      background: #f8fafc;
+    }
+
+    .compare-table td.ez-col {
+      background: #f0f9ff;
+      font-weight: 700;
+      color: #0f172a;
+      border-left: 1px solid #bae6fd;
+      border-right: 1px solid #bae6fd;
+    }
+
+    .moat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .moat-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 8px 10px;
+      box-shadow: none !important;
+      word-break: keep-all;
+    }
+
+    .moat-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: #0284c7;
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      word-break: keep-all;
+    }
+
+    .moat-desc {
+      font-size: 10.5px;
+      color: #475569;
+      line-height: 1.35;
+      word-break: keep-all;
+    }
+
+    /* ==========================================
+       SLIDE 8: ROADMAP & VISION
+       ========================================== */
+    .timeline-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+      word-break: keep-all;
+    }
+
+    .timeline-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 8px 10px;
+      position: relative;
+      box-shadow: none !important;
+      word-break: keep-all;
+    }
+
+    .timeline-card.active {
+      border: 1.5px solid #0284c7;
+      background: #f0f9ff;
+      box-shadow: none !important;
+    }
+
+    .timeline-phase {
+      font-family: 'Outfit', sans-serif;
+      font-size: 10px;
+      font-weight: 800;
+      color: #0284c7;
+      margin-bottom: 2px;
+    }
+
+    .timeline-title {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 3px;
+      word-break: keep-all;
+    }
+
+    .timeline-list {
+      list-style: none;
+      padding: 0;
+      font-size: 10px;
+      color: #475569;
+      line-height: 1.4;
+      word-break: keep-all;
+    }
+
+    .timeline-list li {
+      margin-bottom: 2px;
+      display: flex;
+      align-items: flex-start;
+      gap: 3px;
+    }
+
+    .timeline-list li::before {
+      content: "•";
+      color: #0284c7;
+      font-weight: bold;
+    }
+
+    .vision-banner {
+      background: #f0f9ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      box-shadow: none !important;
+      word-break: keep-all;
+    }
+
+    .vision-quote {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.45;
+      word-break: keep-all;
+    }
+
+    .vision-quote strong {
+      color: #0284c7;
+    }
+
+    .vision-contact-card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 8px 14px;
+      text-align: right;
+      min-width: 200px;
+      box-shadow: none !important;
+      word-break: keep-all;
+    }
+
+    .contact-company {
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .contact-meta {
+      font-size: 10.5px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================
+       SLIDE 1: COVER
+       ======================================================== -->
+  <section class="slide cover-slide">
+    <div class="cover-container">
+      <!-- Left Content -->
+      <div class="cover-left">
+        <div class="cover-badge-row">
+          <span class="category-badge">🚀 INVESTOR RELATIONS</span>
+          <span class="pill-tag pill-success">매장 PC 불필요 (100% BYOD)</span>
+          <span class="pill-tag pill-info">Plug & Play Cloud MPS</span>
+        </div>
+        <h1 class="cover-title">
+          ez<span class="gradient-text">Forme</span>
+        </h1>
+        <h2 class="cover-subtitle">
+          제로 드라이버 무선 클라우드 프린팅 플랫폼
+        </h2>
+        <p class="cover-desc">
+          "드라이버 0초 · 매장 PC 불필요 · 앱 설치 0개"<br>
+          대한민국 모든 공간의 잠자는 프린터를 초소형 스마트 허브로 깨우는 무인 인쇄의 혁신
+        </p>
+
+        <!-- 3 Metrics -->
+        <div class="cover-metrics-grid">
+          <div class="cover-metric-box">
+            <div class="cover-metric-num">0 Sec</div>
+            <div class="cover-metric-label">드라이버 설치 시간</div>
+          </div>
+          <div class="cover-metric-box">
+            <div class="cover-metric-num">100%</div>
+            <div class="cover-metric-label">기존 프린터 무선 호환</div>
+          </div>
+          <div class="cover-metric-box">
+            <div class="cover-metric-num">10,000+</div>
+            <div class="cover-metric-label">전국 1차 타깃 거점</div>
+          </div>
+        </div>
+
+        <div style="font-size: 12px; font-weight: 700; color: #475569; word-break: keep-all;">
+          아이그리드 (IGRID)
+        </div>
+      </div>
+
+      <!-- Right Visual Frame -->
+      <div class="cover-right">
+        <div class="hero-image-frame">
+          <img src="file:///Users/macbook/Desktop/igrid/ezforme/public/ezforme_hero.jpg" alt="ezForme Smart Hub & Cloud Print">
+          <div class="hero-overlay-tag">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 14px;">🖨️</span>
+              <span style="font-weight: 700; color: #fff;">ezForme IoT Hub</span>
+            </div>
+            <span style="color: #38bdf8; font-family: 'Outfit'; font-weight: 700;">USB Plug & Play 100%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="slide-footer">
+      <div class="confidential">
+        <span>🔒 STRICTLY CONFIDENTIAL</span>
+        <span>•</span>
+        <span>아이그리드 (IGRID)</span>
+      </div>
+      <div class="page-number">01 / 08</div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       SLIDE 2: BACKGROUND & PAIN POINTS
+       ======================================================== -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="category-badge">01. BACKGROUND & PROBLEM</div>
+        <h2 class="slide-title">
+          왜 이 서비스를 구상했는가? <span class="highlight">단 1장의 인쇄를 위한 극심한 고통</span>
+        </h2>
+      </div>
+      <div class="brand-mark">
+        <div class="brand-mark-logo">e</div>
+        ezForme IR
+      </div>
+    </div>
+
+    <div class="slide-body">
+      <!-- Genesis Quote Banner: Title on top, Description below -->
+      <div class="genesis-banner">
+        <div class="genesis-icon">💡</div>
+        <div class="genesis-content">
+          <div class="genesis-title">구상 배경 (The Genesis Story)</div>
+          <div class="genesis-desc">
+            "외래 방문자로서 스터디카페와 공유오피스에서 과제물 1~2장을 출력하려다 <strong>300MB 드라이버 검색, IP 설정, 설치 오류로 20분을 허비하고 분통을 터뜨렸던 1인 기업가의 실제 고통</strong>에서 출발했습니다."
+          </div>
+        </div>
+      </div>
+
+      <!-- Dual Pain Points Grid -->
+      <div class="grid-2">
+        <!-- Pain 1: 이용자 -->
+        <div class="pain-card">
+          <div class="card-title">
+            <span style="font-size: 18px;">👤</span>
+            <span>방문객 & 노마드 워커의 고통 (Customer Agony)</span>
+          </div>
+          <div class="pain-item">
+            <div class="pain-bullet">1</div>
+            <div>
+              <strong>끝없는 드라이버 설치 지옥</strong><br>
+              프린터 모델명 확인 ➔ 제조사 사이트 탐색 ➔ 수백 메가 설치 파일 다운로드 ➔ 마법사 진행에 15분 이상 소요.
+            </div>
+          </div>
+          <div class="pain-item">
+            <div class="pain-bullet">2</div>
+            <div>
+              <strong>공용 PC의 개인정보 유출 공포</strong><br>
+              카카오톡·포털·이메일 로그인 후 미로그아웃, 이력서·주민등록등본 파일 방치, USB 바이러스 감염 위험.
+            </div>
+          </div>
+          <div class="pain-item">
+            <div class="pain-bullet">3</div>
+            <div>
+              <strong>폐쇄망 Wi-Fi 비밀번호 장벽</strong><br>
+              매장 Wi-Fi 암호를 모르거나 게스트 네트워크 격리로 인해 프린터 장치 검색 자체가 불가능.
+            </div>
+          </div>
+        </div>
+
+        <!-- Pain 2: 공간 운영자 -->
+        <div class="pain-card highlight-blue">
+          <div class="card-title">
+            <span style="font-size: 18px;">🏪</span>
+            <span>무인 공간 운영자(점주)의 고통 (Operator Agony)</span>
+          </div>
+          <div class="pain-item">
+            <div class="pain-bullet blue">1</div>
+            <div>
+              <strong>매일 쏟아지는 프린터 연결 문의 전화</strong><br>
+              "사장님 프린터 어떻게 잡아요?", "드라이버 오류 떠요"… 무인 매장인데도 점주가 카운터에 매달려야 하는 모순.
+            </div>
+          </div>
+          <div class="pain-item">
+            <div class="pain-bullet blue">2</div>
+            <div>
+              <strong>공용 PC 관리 부담 및 고장 리스크</strong><br>
+              공용 PC 잦은 고장, 바이러스 감염, 용지·토너 무단 낭비, PC 교체 및 유지보수 비용 발생.
+            </div>
+          </div>
+          <div class="pain-item">
+            <div class="pain-bullet blue">3</div>
+            <div>
+              <strong>기존 대형 키오스크(프린팅박스 등) 입점 불가</strong><br>
+              수백만 원 기계값과 거대한 설치 공간(1m × 1m) 부담으로 소형 스터디카페·게스트하우스 입점 원천 배제.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <div class="confidential">
+        <span>🔒 STRICTLY CONFIDENTIAL</span>
+        <span>•</span>
+        <span>아이그리드 (IGRID)</span>
+      </div>
+      <div class="page-number">02 / 08</div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       SLIDE 3: SOLUTION & 4-ZERO (Zero-PC 포함)
+       ======================================================== -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="category-badge">02. SOLUTION & CORE VALUE</div>
+        <h2 class="slide-title">
+          ezForme의 해결책: <span class="highlight">기존 프린터에 꽂는 4-ZERO 플러그인 혁신</span>
+        </h2>
+      </div>
+      <div class="brand-mark">
+        <div class="brand-mark-logo">e</div>
+        ezForme IR
+      </div>
+    </div>
+
+    <div class="slide-body">
+      <!-- Core Value Proposition Header -->
+      <div style="margin-bottom: 14px; background: #f0f9ff; border-left: 4px solid #0284c7; padding: 10px 16px; border-radius: 0 10px 10px 0; word-break: keep-all;">
+        <span style="font-size: 14px; font-weight: 800; color: #0f172a;">💡 솔루션 정의:</span>
+        <span style="font-size: 13px; color: #334155; margin-left: 6px;">
+          수백만 원 복합기도, 관리 힘든 공용 PC도 필요 없습니다. <strong>매장에 이미 있는 일반 프린터 USB에 스마트 허브만 꽂으면 즉시 무인 클라우드 스테이션 완성!</strong>
+        </span>
+      </div>
+
+      <!-- 4-ZERO Cards Grid with Zero-PC -->
+      <div class="grid-4">
+        <!-- 1. Zero-Driver -->
+        <div class="zero-card">
+          <div>
+            <div class="zero-num">01</div>
+            <div class="zero-title">Zero-Driver</div>
+            <div class="zero-sub">드라이버 설치 0초</div>
+            <div style="font-size: 11.5px; color: #475569; margin-top: 6px; line-height: 1.45; word-break: keep-all;">
+              윈도우/맥 가상 드라이버 완전 배제. 스마트폰 및 노트북 웹 브라우저에서 즉시 실행되는 Web-to-Print.
+            </div>
+          </div>
+          <div class="zero-benefit">
+            <span>⚡ 진입 장벽 0초 해소</span>
+          </div>
+        </div>
+
+        <!-- 2. Zero-PC -->
+        <div class="zero-card">
+          <div>
+            <div class="zero-num">02</div>
+            <div class="zero-title">Zero-PC</div>
+            <div class="zero-sub">매장 공용 PC 불필요</div>
+            <div style="font-size: 11.5px; color: #475569; margin-top: 6px; line-height: 1.45; word-break: keep-all;">
+              인쇄를 위한 매장 PC가 전혀 필요 없습니다. 손님은 본인 기기로 즉시 출력하고, 매장은 PC 관리비와 고장 걱정이 0원입니다.
+            </div>
+          </div>
+          <div class="zero-benefit">
+            <span>💻 공용 PC 비용·고장 제로</span>
+          </div>
+        </div>
+
+        <!-- 3. Zero-App -->
+        <div class="zero-card">
+          <div>
+            <div class="zero-num">03</div>
+            <div class="zero-title">Zero-App</div>
+            <div class="zero-sub">앱 다운로드 0개</div>
+            <div style="font-size: 11.5px; color: #475569; margin-top: 6px; line-height: 1.45; word-break: keep-all;">
+              별도 앱스토어 설치 불필요. 카메라 QR 스캔 또는 4자리 단축 주소로 1초 접속. LTE/5G 무관 가동.
+            </div>
+          </div>
+          <div class="zero-benefit">
+            <span>📱 Wi-Fi 암호 불필요</span>
+          </div>
+        </div>
+
+        <!-- 4. Zero-Trace -->
+        <div class="zero-card">
+          <div>
+            <div class="zero-num">04</div>
+            <div class="zero-title">Zero-Trace</div>
+            <div class="zero-sub">개인정보 흔적 0%</div>
+            <div style="font-size: 11.5px; color: #475569; margin-top: 6px; line-height: 1.45; word-break: keep-all;">
+              인쇄 완료 즉시 서버 및 단말기 메모리에서 파일 영구 파기(Shred). 등본·자격증 유출 사고 원천 차단.
+            </div>
+          </div>
+          <div class="zero-benefit">
+            <span>🔒 금융권 수준 보안</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <div class="confidential">
+        <span>🔒 STRICTLY CONFIDENTIAL</span>
+        <span>•</span>
+        <span>아이그리드 (IGRID)</span>
+      </div>
+      <div class="page-number">03 / 08</div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       SLIDE 4: PRODUCT EXPERIENCE & ARCHITECTURE (하단 항목 분리)
+       ======================================================== -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="category-badge">03. PRODUCT EXPERIENCE & ARCHITECTURE</div>
+        <h2 class="slide-title">
+          어떻게 작동하는가? <span class="highlight">3단계 초간편 UX와 클라우드 릴레이 기술</span>
+        </h2>
+      </div>
+      <div class="brand-mark">
+        <div class="brand-mark-logo">e</div>
+        ezForme IR
+      </div>
+    </div>
+
+    <div class="slide-body">
+      <!-- 3-Step User Experience -->
+      <div class="grid-3" style="margin-bottom: 12px;">
+        <div class="step-box">
+          <div class="step-badge">1</div>
+          <div class="step-title">스캔 & 접속 (1초)</div>
+          <div class="step-desc">
+            매장 PC 앞에 갈 필요 없이, 내 자리에서 QR 스캔<br>
+            (노트북 이용자는 <code>ezforme.kr</code> + 매장코드 4자리 입력)
+          </div>
+        </div>
+        <div class="step-box">
+          <div class="step-badge">2</div>
+          <div class="step-title">문서 업로드 & 원클릭 결제</div>
+          <div class="step-desc">
+            PDF/이미지 파일 드래그 앤 드롭<br>
+            카카오페이 / 토스페이 / 카드 100원부터 즉시 결제
+          </div>
+        </div>
+        <div class="step-box">
+          <div class="step-badge">3</div>
+          <div class="step-title">3초 무선 배출 완료!</div>
+          <div class="step-desc">
+            프린터에서 즉시 자동 인쇄 배출<br>
+            (혼선 방지 6자리 PIN 번호 보안 출력 모드 지원)
+          </div>
+        </div>
+      </div>
+
+      <!-- Cloud Relay Architecture Card -->
+      <div class="arch-diagram-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="font-size: 13.5px; font-weight: 800; color: #0f172a;">🏗️ ezForme 클라우드 우편 릴레이 아키텍처 (Cloud Relay Engine)</span>
+          <span class="pill-tag pill-success">방화벽 인바운드 개방 불필요 (0-Config)</span>
+        </div>
+
+        <div class="arch-flow">
+          <div class="arch-node">
+            <div style="font-size: 20px;">📱💻</div>
+            <div class="arch-node-title">사용자 본인 기기</div>
+            <div class="arch-node-sub">스마트폰 / 노트북 웹</div>
+          </div>
+          <div class="arch-arrow">➔ TLS 1.3</div>
+          <div class="arch-node core">
+            <div style="font-size: 20px;">☁️</div>
+            <div class="arch-node-title">ezForme Cloud Hub</div>
+            <div class="arch-node-sub">PDF 래스터화 / PG 정산</div>
+          </div>
+          <div class="arch-arrow">➔ WebSocket</div>
+          <div class="arch-node core">
+            <div style="font-size: 20px;">📟</div>
+            <div class="arch-node-title">ezForme IoT Station</div>
+            <div class="arch-node-sub">라즈베리파이 / PC 데몬</div>
+          </div>
+          <div class="arch-arrow">➔ USB / RAW 9100</div>
+          <div class="arch-node">
+            <div style="font-size: 20px;">🖨️</div>
+            <div class="arch-node-title">일반 매장 프린터</div>
+            <div class="arch-node-sub">삼성·HP·캐논 등 기종 무관</div>
+          </div>
+        </div>
+
+        <!-- 3 Architecture Features with Title on Top and Description Below -->
+        <div class="arch-feature-grid">
+          <div class="arch-feature-card">
+            <div class="arch-feature-title">USB Auto-Discovery</div>
+            <div class="arch-feature-desc">꽂는 즉시 프린터 제조사·기종 0.1초 자동 감지</div>
+          </div>
+          <div class="arch-feature-card">
+            <div class="arch-feature-title">Read-Only OverlayFS</div>
+            <div class="arch-feature-desc">전원이 1,000번 무단 차단되어도 시스템 100% 무적 보존</div>
+          </div>
+          <div class="arch-feature-card">
+            <div class="arch-feature-title">실시간 SNMP 장애 감지</div>
+            <div class="arch-feature-desc">용지 걸림 발생 시 1초 만에 자동 결제 취소 및 환불</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <div class="confidential">
+        <span>🔒 STRICTLY CONFIDENTIAL</span>
+        <span>•</span>
+        <span>아이그리드 (IGRID)</span>
+      </div>
+      <div class="page-number">04 / 08</div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       SLIDE 5: TARGET MARKET & EVIDENCE-BASED SCALE
+       ======================================================== -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="category-badge">04. TARGET MARKET & VERIFIABLE SCALE</div>
+        <h2 class="slide-title">
+          타겟 시장: <span class="highlight">공식 데이터로 검증된 전국 10,000+개 오프라인 거점</span>
+        </h2>
+      </div>
+      <div class="brand-mark">
+        <div class="brand-mark-logo">e</div>
+        ezForme IR
+      </div>
+    </div>
+
+    <div class="slide-body">
+      <!-- 3 Key Market Pillars -->
+      <div class="grid-3" style="margin-bottom: 14px;">
+        <!-- Market 1 -->
+        <div class="market-stat-card">
+          <div>
+            <div class="market-num">6,900+</div>
+            <div class="market-label">전국 무인 스터디카페</div>
+            <div class="market-desc">
+              학습공간 시장의 75%를 장악한 100% 무인 운영 업종. 프린터 연결 민원 해소 및 무인 부가수익 창출 니즈 집중.
+            </div>
+            <div class="market-source-tag">[출처: KB국민카드 가맹점 빅데이터 분석]</div>
+          </div>
+          <span class="market-badge">최우선 침투 타깃 (Beachhead)</span>
+        </div>
+
+        <!-- Market 2 -->
+        <div class="market-stat-card">
+          <div>
+            <div class="market-num">2,500+</div>
+            <div class="market-label">게스트하우스 & 도시민박</div>
+            <div class="market-desc">
+              외국인 및 여행객의 e-티켓, 비자, 바우처 출력 필수. 공용 PC 바이러스 리스크 없이 스마트폰으로 즉시 출력.
+            </div>
+            <div class="market-source-tag">[출처: 한국관광공사 도시민박·한옥체험 인허가 통계]</div>
+          </div>
+          <span class="market-badge">외국인 대상 고단가 시장</span>
+        </div>
+
+        <!-- Market 3 -->
+        <div class="market-stat-card">
+          <div>
+            <div class="market-num">800+</div>
+            <div class="market-label">중소형 공유오피스 라운지</div>
+            <div class="market-desc">
+              외부 미팅 게스트의 소액 유료 출력 및 입주사별 무료 출력 쿼터/초과분 자동 합산 정산 SaaS 도입 니즈.
+            </div>
+            <div class="market-source-tag">[출처: 프롭테크 및 공유공간 산업 협회 현황]</div>
+          </div>
+          <span class="market-badge">B2B 월 구독 SaaS 확장</span>
+        </div>
+      </div>
+
+      <!-- Real Benchmark Validation Banner -->
+      <div class="card glow-primary" style="padding: 12px 18px; margin-top: 2px;">
+        <div style="font-size: 13px; font-weight: 800; color: #0f172a; margin-bottom: 6px;">
+          📈 실거래 데이터로 검증된 무인 출력 시장 수요 (Validation by Real Industry Figures)
+        </div>
+        <div style="display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 14px; font-size: 11.5px; color: #334155;">
+          <div style="border-right: 1px solid #e2e8f0; padding-right: 12px;">
+            <div style="font-weight: 700; color: #0284c7; margin-bottom: 2px;">• 무인 로드숍 1위 (프린트카페)</div>
+            <div>전국 330여 개 가맹점 운영, <strong>점포당 연평균 매출 약 6,000만 원</strong> (전국 연간 약 200억 원 실거래 증명)</div>
+          </div>
+          <div style="border-right: 1px solid #e2e8f0; padding-right: 12px;">
+            <div style="font-weight: 700; color: #0284c7; margin-bottom: 2px;">• 편의점 키오스크 1위 (프린팅박스)</div>
+            <div>전국 편의점 1,000여 개소 입점, <strong>연간 매출 90억 원대</strong> (오프라인 소량 출력 수요의 확고한 존재)</div>
+          </div>
+          <div>
+            <div style="font-weight: 700; color: #16a34a; margin-bottom: 2px;">• ezForme의 틈새 독점 기회</div>
+            <div>대형 기계 입점이 불가능한 <strong>전국 10,000+개소 틈새 거점</strong>을 무자본 플러그인 방식으로 선점</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <div class="confidential">
+        <span>🔒 STRICTLY CONFIDENTIAL</span>
+        <span>•</span>
+        <span>아이그리드 (IGRID)</span>
+      </div>
+      <div class="page-number">05 / 08</div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       SLIDE 6: BUSINESS MODEL & UNIT ECONOMICS
+       ======================================================== -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="category-badge">05. BUSINESS MODEL & ECONOMICS</div>
+        <h2 class="slide-title">
+          수익 모델: <span class="highlight">Asset-Light 고마진 2-Track 비즈니스 모델</span>
+        </h2>
+      </div>
+      <div class="brand-mark">
+        <div class="brand-mark-logo">e</div>
+        ezForme IR
+      </div>
+    </div>
+
+    <div class="slide-body">
+      <!-- 2-Track BM Grid -->
+      <div class="grid-2">
+        <!-- Track 1: B2C -->
+        <div class="bm-track-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="card-title">
+              <span>💳 Track 1: B2C 트랜잭션 과금</span>
+            </div>
+            <span class="pill-tag pill-success">스터디카페 / 게스트하우스</span>
+          </div>
+          <div class="bm-price-row">
+            <span class="bm-price-big">100원 ~ 300원</span>
+            <span class="bm-price-unit">/ 흑백(100원), 컬러(300원) 장당 과금</span>
+          </div>
+          
+          <div class="bm-split-bar">
+            <div class="split-platform"></div>
+            <div class="split-owner"></div>
+          </div>
+          <div class="split-legend">
+            <span style="color: #0284c7;">ezForme 플랫폼 수수료 (40%)</span>
+            <span style="color: #16a34a;">공간 점주 정산금 (60%)</span>
+          </div>
+
+          <div style="font-size: 11.5px; color: #475569; line-height: 1.5; word-break: keep-all;">
+            • <strong>점주 유인책</strong>: 추가 설비 투자 없이 기존 프린터에 연결만 하면 매달 무인 부가수익 자동 정산.
+          </div>
+        </div>
+
+        <!-- Track 2: B2B -->
+        <div class="bm-track-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="card-title">
+              <span>🏢 Track 2: B2B 공간 SaaS 구독</span>
+            </div>
+            <span class="pill-tag pill-info">공유오피스 라운지</span>
+          </div>
+          <div class="bm-price-row">
+            <span class="bm-price-big">3~5 만원</span>
+            <span class="bm-price-unit">/ 공간 지점당 월 고정 구독료</span>
+          </div>
+
+          <div style="margin: 8px 0 8px 0; padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
+            <div style="font-size: 11.5px; font-weight: 700; color: #0f172a; margin-bottom: 3px;">제공 기능:</div>
+            <div style="font-size: 11px; color: #334155; line-height: 1.4; word-break: keep-all;">
+              • 입주사별 무료 크레딧 자동 차감 & 초과 과금 내역 실시간 집계<br>
+              • 월말 관리비 청구서 연동 원클릭 CSV 자동 정산 리포트<br>
+              • 외부 미팅 방문객 전용 즉시 결제 파이프라인
+            </div>
+          </div>
+
+          <div style="font-size: 11px; color: #475569; word-break: keep-all;">
+            매니저의 수동 검수 및 인쇄비 미납 스트레스를 100% 제거하는 필수 관리 솔루션.
+          </div>
+        </div>
+      </div>
+
+      <!-- Unit Economics Strip -->
+      <div class="economics-strip">
+        <div>
+          <div class="econ-num">0 원</div>
+          <div class="econ-label">점주 초기 장비 투자 부담금</div>
+        </div>
+        <div>
+          <div class="econ-num">1~2 개월</div>
+          <div class="econ-label">플랫폼 초기 하드웨어 회수 기간</div>
+        </div>
+        <div>
+          <div class="econ-num">월 3~4 만원</div>
+          <div class="econ-label">50개 매장 기준 클라우드 인프라비</div>
+        </div>
+        <div>
+          <div class="econ-num">85%+</div>
+          <div class="econ-label">목표 영업이익률 (SaaS)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <div class="confidential">
+        <span>🔒 STRICTLY CONFIDENTIAL</span>
+        <span>•</span>
+        <span>아이그리드 (IGRID)</span>
+      </div>
+      <div class="page-number">06 / 08</div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       SLIDE 7: COMPETITIVE ADVANTAGE & MOAT
+       ======================================================== -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="category-badge">06. COMPETITIVE ADVANTAGE</div>
+        <h2 class="slide-title">
+          경쟁 우위: <span class="highlight">거대한 기계와 무거운 PC를 이기는 3대 해자(Moat)</span>
+        </h2>
+      </div>
+      <div class="brand-mark">
+        <div class="brand-mark-logo">e</div>
+        ezForme IR
+      </div>
+    </div>
+
+    <div class="slide-body">
+      <!-- Benchmark Table -->
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>비교 항목</th>
+            <th>프린팅박스 (국내 대기업)</th>
+            <th>프린트카페 (독립 매장)</th>
+            <th>ezeep Hub (독일 글로벌)</th>
+            <th class="ez-col">ezForme (우리 솔루션)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>구현 형태</strong></td>
+            <td>수백만 원 대형 키오스크 자판기</td>
+            <td>24시 무인 매장 (신규 점포 창업)</td>
+            <td>서구권 공유오피스용 Hub</td>
+            <td class="ez-col"><strong>기존 일반 프린터 플러그인 박스</strong></td>
+          </tr>
+          <tr>
+            <td><strong>초기 투자비</strong></td>
+            <td>수백만 원 (기계 입점 부담)</td>
+            <td>5천만 ~ 1억 원 (인테리어/임대)</td>
+            <td>유저당 월 구독료 청구</td>
+            <td class="ez-col"><strong>초저비용 플러그앤플레이 (무상 지원)</strong></td>
+          </tr>
+          <tr>
+            <td><strong>공간 점유</strong></td>
+            <td>1m × 1m 거대 부피 (소형 불가)</td>
+            <td>전용 매장 전체 점유</td>
+            <td>프린터 옆 소형 허브</td>
+            <td class="ez-col"><strong>신용카드 크기 (프린터 뒤편 은폐)</strong></td>
+          </tr>
+          <tr>
+            <td><strong>조작 방식</strong></td>
+            <td>키오스크 화면 직접 터치/조작</td>
+            <td>매장 공용 PC 앞 대기 조작</td>
+            <td>전용 앱 설치 및 계정 로그인</td>
+            <td class="ez-col"><strong>스마트폰/노트북 즉시 조작 (매장 PC 불필요)</strong></td>
+          </tr>
+          <tr>
+            <td><strong>국내 결제 최적화</strong></td>
+            <td>키오스크 카드 단말기</td>
+            <td>신용카드 단말기</td>
+            <td>해외 신용카드 (원클릭 불가)</td>
+            <td class="ez-col"><strong>카카오 / 토스 / 네이버페이 1초 원클릭</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 3 Defensible Moats -->
+      <div class="moat-grid">
+        <div class="moat-card">
+          <div class="moat-title">🛡️ 1. Asset-Light 기생형 확장</div>
+          <div class="moat-desc">
+            프린터를 사지 않고, 전국 10,000+개 매장에 이미 있는 기종(삼성·HP·캐논)을 그대로 흡수하는 초고속 침투.
+          </div>
+        </div>
+        <div class="moat-card">
+          <div class="moat-title">💳 2. 한국형 초저수수료 결제</div>
+          <div class="moat-desc">
+            해외 솔루션이 진입하지 못하는 국내 간편결제 생태계 선점. 100원 소액 결제도 정률제 3~4원 수수료 완벽 방어.
+          </div>
+        </div>
+        <div class="moat-card">
+          <div class="moat-title">⚙️ 3. 장애 제로 무인 내구성</div>
+          <div class="moat-desc">
+            USB 기종 자동 감지 + Read-Only 무적 OS(전원 뽑힘 면역) + 용지 걸림 시 1초 카카오페이 자동 환불.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <div class="confidential">
+        <span>🔒 STRICTLY CONFIDENTIAL</span>
+        <span>•</span>
+        <span>아이그리드 (IGRID)</span>
+      </div>
+      <div class="page-number">07 / 08</div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       SLIDE 8: ROADMAP & VISION
+       ======================================================== -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="category-badge">07. ROADMAP & VISION</div>
+        <h2 class="slide-title">
+          실행 로드맵: <span class="highlight">현장 실증에서 전국 500개 거점 독점으로</span>
+        </h2>
+      </div>
+      <div class="brand-mark">
+        <div class="brand-mark-logo">e</div>
+        ezForme IR
+      </div>
+    </div>
+
+    <div class="slide-body">
+      <!-- 4-Phase Roadmap Grid -->
+      <div class="timeline-container">
+        <!-- Phase 1 -->
+        <div class="timeline-card">
+          <div class="timeline-phase">PHASE 01 (완료)</div>
+          <div class="timeline-title">MVP & 프로토타입</div>
+          <ul class="timeline-list">
+            <li>반응형 Web-to-Print 구현</li>
+            <li>WebSocket 실시간 중계 엔진</li>
+            <li>CUPS 및 가상 스풀러 테스트</li>
+            <li>모바일 결제 UI 모달 완성</li>
+          </ul>
+        </div>
+
+        <!-- Phase 2 -->
+        <div class="timeline-card active">
+          <div class="timeline-phase" style="color: #0284c7;">PHASE 02 (현재 진행 중)</div>
+          <div class="timeline-title">1호점 실증 (POC)</div>
+          <ul class="timeline-list">
+            <li>현장 테스트 단말기 투입</li>
+            <li>10대 극한 시나리오 검증</li>
+            <li>실사용 2주 데이터 수집</li>
+            <li>자동 환불 파이프라인 검증</li>
+          </ul>
+        </div>
+
+        <!-- Phase 3 -->
+        <div class="timeline-card">
+          <div class="timeline-phase">PHASE 03 (2026 Q4)</div>
+          <div class="timeline-title">50개 거점 확산</div>
+          <ul class="timeline-list">
+            <li>양산형 초소형 단말기 패키징</li>
+            <li>스터디카페 협회/프랜차이즈 B2B 제휴</li>
+            <li>점주 셀프 신청 포털 오픈</li>
+            <li>월 매출 손익분기점(BEP) 달성</li>
+          </ul>
+        </div>
+
+        <!-- Phase 4 -->
+        <div class="timeline-card">
+          <div class="timeline-phase">PHASE 04 (2027)</div>
+          <div class="timeline-title">전국 500개 표준화</div>
+          <ul class="timeline-list">
+            <li>전국 500개 거점 매장 장악</li>
+            <li>공유오피스 B2B 관리 SaaS 본격화</li>
+            <li>대학가 거점 무인 스테이션 연계</li>
+            <li>시리즈 A 투자 유치 및 스케일업</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Vision & Contact Banner -->
+      <div class="vision-banner">
+        <div>
+          <div style="font-size: 11px; font-weight: 800; color: #0284c7; text-transform: uppercase; margin-bottom: 4px;">
+            OUR GRAND VISION
+          </div>
+          <div class="vision-quote">
+            "복합기를 새로 사는 시대는 끝났습니다.<br>
+            <strong>ezForme</strong>은 모든 공간에 이미 존재하는 프린터를 클라우드로 깨우는 <strong>가장 가벼운 혁신</strong>입니다."
+          </div>
+        </div>
+
+        <div class="vision-contact-card">
+          <div class="contact-company">아이그리드 (IGRID)</div>
+          <div class="contact-meta">ezForme 클라우드 사업부</div>
+          <div class="contact-meta">Email: contact@igrid.io | ezforme.kr</div>
+          <div style="margin-top: 6px; font-size: 10.5px; color: #0284c7; font-weight: 700;">
+            Partnership & IR Inquiries Welcome
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <div class="confidential">
+        <span>🔒 STRICTLY CONFIDENTIAL</span>
+        <span>•</span>
+        <span>아이그리드 (IGRID) All Rights Reserved.</span>
+      </div>
+      <div class="page-number">08 / 08</div>
+    </div>
+  </section>
+
+</body>
+</html>

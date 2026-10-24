@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ezForme - 제로 드라이버 무선 클라우드 프린트</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🖨️</text></svg>">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="brand-header">
+      <div class="logo-badge">
+        <div class="logo-icon">🖨️</div>
+        <div>
+          <h1 class="brand-title">ezForme</h1>
+          <p class="brand-subtitle">드라이버 설치 0초 | 앱 다운로드 0개 | 스터디카페·게스트하우스 전용 무선 인쇄</p>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <button id="soundToggleBtn" class="btn-sample-file" style="padding: 6px 14px; font-size: 12px;">🔊 사운드 ON</button>
+        <div class="header-status-pill">
+          <div id="connStatusDot" class="status-dot-pulse"></div>
+          <span>현장 스테이션 정상 가동 중</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Master Dual Split Grid -->
+    <div class="dual-split-grid">
+      
+      <!-- LEFT: KIOSK VIEW -->
+      <section class="glass-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">🖥️ 현장 프린터 키오스크 (Station Terminal)</h2>
+          <span style="font-size: 12px; color: var(--text-muted);">지점: 스터디카페 신촌 1호점</span>
+        </div>
+
+        <!-- QR 안내 영역 -->
+        <div class="kiosk-hero-qr">
+          <div class="qr-frame">
+            <!-- Simulated Crisp SVG QR Code pointing to /mobile.html -->
+            <svg width="90" height="90" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="100" height="100" fill="white"/>
+              <!-- Corner 1 -->
+              <rect x="10" y="10" width="28" height="28" fill="#0f172a"/>
+              <rect x="16" y="16" width="16" height="16" fill="white"/>
+              <rect x="20" y="20" width="8" height="8" fill="#0f172a"/>
+              <!-- Corner 2 -->
+              <rect x="62" y="10" width="28" height="28" fill="#0f172a"/>
+              <rect x="68" y="16" width="16" height="16" fill="white"/>
+              <rect x="72" y="20" width="8" height="8" fill="#0f172a"/>
+              <!-- Corner 3 -->
+              <rect x="10" y="62" width="28" height="28" fill="#0f172a"/>
+              <rect x="16" y="68" width="16" height="16" fill="white"/>
+              <rect x="20" y="72" width="8" height="8" fill="#0f172a"/>
+              <!-- Data Blocks -->
+              <rect x="44" y="12" width="8" height="16" fill="#0f172a"/>
+              <rect x="44" y="34" width="12" height="8" fill="#0f172a"/>
+              <rect x="14" y="44" width="8" height="12" fill="#0f172a"/>
+              <rect x="30" y="44" width="16" height="8" fill="#0f172a"/>
+              <rect x="60" y="44" width="14" height="14" fill="#0f172a"/>
+              <rect x="44" y="62" width="8" height="24" fill="#0f172a"/>
+              <rect x="60" y="68" width="14" height="8" fill="#0f172a"/>
+              <rect x="78" y="62" width="12" height="12" fill="#0f172a"/>
+              <rect x="78" y="80" width="12" height="8" fill="#0f172a"/>
+            </svg>
+          </div>
+          <div class="qr-desc">
+            <h4>스마트폰 카메라로 QR을 스캔하세요</h4>
+            <p>1. 드라이버나 전용 앱 설치 없이 웹으로 바로 연결됩니다.<br>
+            2. 문서를 업로드하고 발급받은 <b>6자리 PIN</b>을 아래에 입력하세요.</p>
+          </div>
+        </div>
+
+        <!-- PIN Touch Numpad -->
+        <div class="pin-numpad-section">
+          <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px; font-weight: 500;">
+            인쇄 보안 핀코드(PIN) 6자리 입력:
+          </div>
+          <div id="pinDisplayBox" class="pin-display-box">______</div>
+
+          <div class="numpad-grid">
+            <button class="num-btn" data-num="1">1</button>
+            <button class="num-btn" data-num="2">2</button>
+            <button class="num-btn" data-num="3">3</button>
+            <button class="num-btn" data-num="4">4</button>
+            <button class="num-btn" data-num="5">5</button>
+            <button class="num-btn" data-num="6">6</button>
+            <button class="num-btn" data-num="7">7</button>
+            <button class="num-btn" data-num="8">8</button>
+            <button class="num-btn" data-num="9">9</button>
+            <button class="num-btn" data-num="clear" style="color: #f87171; font-size: 15px;">전체삭제</button>
+            <button class="num-btn" data-num="0">0</button>
+            <button class="num-btn" data-num="back" style="color: #fbbf24; font-size: 16px;">⌫ 지움</button>
+            <button id="btnKioskPrint" class="num-btn btn-action-print">🖨️ 인쇄물 출력하기 (Print Now)</button>
+          </div>
+        </div>
+
+        <!-- Hardware Print Engine Simulator -->
+        <div class="printer-hardware-box">
+          <div class="printer-top-bar">
+            <span>Hardware Spooler Engine</span>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span id="printerLed" class="printer-led"></span>
+              <span id="printerStatusText" style="color: #34d399; font-weight: 600;">[정상 대기] Ready</span>
+            </div>
+          </div>
+          
+          <div class="paper-slot">
+            <div id="ejectingPaper" class="ejecting-paper">
+              <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #cbd5e1; padding-bottom: 4px; margin-bottom: 6px;">
+                <b>ezForme Output</b>
+                <span style="color: #64748b;">SUCCESS</span>
+              </div>
+              <div id="ejectedDocTitle" style="font-weight: 700; color: #0284c7;">문서명 출력 중...</div>
+              <div style="font-size: 10px; color: #94a3b8; margin-top: 4px;">Zero Driver • Direct Spooling OK</div>
+            </div>
+          </div>
+
+          <div style="font-size: 11px; color: var(--text-dim); text-align: center;">
+            CUPS / RAW 9100 Direct Port 통신 활성화 상태
+          </div>
+        </div>
+
+        <!-- Recent Jobs Ledger -->
+        <div style="margin-top: 20px;">
+          <div style="font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px;">
+            📋 실시간 인쇄 처리 현황
+          </div>
+          <div id="historyList" class="history-list"></div>
+        </div>
+      </section>
+
+      <!-- RIGHT: MOBILE USER VIEW -->
+      <section class="glass-panel" style="display: flex; flex-direction: column; align-items: center;">
+        <div class="panel-header" style="width: 100%;">
+          <h2 class="panel-title">📱 방문객 스마트폰 화면 (Mobile User)</h2>
+          <a href="/mobile.html" target="_blank" style="font-size: 12px; color: #38bdf8; text-decoration: none;">새 탭으로 열기 ↗</a>
+        </div>
+
+        <!-- Mobile Phone Mockup -->
+        <div class="mobile-device-wrapper">
+          <div class="mobile-notch"></div>
+          
+          <div class="mobile-inner-screen">
+            <!-- Mobile Header -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <div>
+                <span style="font-size: 11px; color: #00f2fe; font-weight: 600; text-transform: uppercase;">ezForme Mobile</span>
+                <div style="font-size: 15px; font-weight: 700;">초간편 무선 인쇄</div>
+              </div>
+              <div style="font-size: 11px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 4px 8px; border-radius: 6px; font-weight: 600;">
+                강남 1호점
+              </div>
+            </div>
+
+            <!-- B2B Tenant Selector -->
+            <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-sm); padding: 10px; margin-bottom: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <span style="font-size: 11px; font-weight: 700; color: #38bdf8;">🏢 입주사 멤버십 / 게스트</span>
+                <span id="tenantStatusBadge" style="font-size: 10px; color: #34d399; background: rgba(52, 211, 153, 0.15); padding: 2px 6px; border-radius: 4px; font-weight: 600;">B2B 무료 크레딧</span>
+              </div>
+              <select id="tenantSelect" style="width: 100%; background: #0b1120; color: #f8fafc; border: 1px solid #334155; border-radius: 6px; padding: 6px 8px; font-size: 12px; outline: none; cursor: pointer;">
+                <option value="ALPHA" selected>(주)알파테크 501호 (무료 68매 잔여 / 0원)</option>
+                <option value="BETA">베타벤처스 604호 (무료 소진 / 익월 관리비 합산)</option>
+                <option value="GAMMA">감마디자인랩 302호 (무료 185매 잔여)</option>
+                <option value="">일반 외부 방문객 / 게스트 (카드·간편결제)</option>
+              </select>
+              <div id="tenantQuotaNote" style="font-size: 10px; color: #94a3b8; margin-top: 5px;">
+                ✨ 입주사는 카드결제 없이 회사 무료 쿼터에서 자동 차감됩니다.
+              </div>
+            </div>
+
+            <!-- File Drop Area -->
+            <div id="dropzone" class="file-dropzone">
+              <div class="dropzone-icon">📄</div>
+              <div class="dropzone-title">인쇄할 파일을 선택하세요</div>
+              <div class="dropzone-sub">PDF, 이미지, 워드 문서 지원 (최대 50MB)</div>
+              
+              <input type="file" id="fileInput" style="display: none;" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.txt">
+              
+              <div style="margin-top: 10px;">
+                <button type="button" id="btnSampleFile" class="btn-sample-file">
+                  ✨ 클릭 한 번으로 테스트 문서 자동 선택
+                </button>
+              </div>
+            </div>
+
+            <!-- Selected File Badge -->
+            <div id="selectedFileBadge" class="selected-file-badge">
+              <div class="selected-file-info">
+                <div class="file-ext-icon">PDF</div>
+                <div>
+                  <div id="selectedFileName" style="font-size: 13px; font-weight: 600;">파일명</div>
+                  <div id="selectedFileSize" style="font-size: 11px; color: var(--text-muted);">크기</div>
+                </div>
+              </div>
+              <span style="font-size: 11px; color: #34d399; font-weight: 600;">준비 완료</span>
+            </div>
+
+            <!-- Options Grid -->
+            <div class="options-grid">
+              <!-- Color Mode -->
+              <div class="option-group">
+                <label class="option-label">색상 설정</label>
+                <div class="segmented-control">
+                  <button type="button" class="seg-btn color-seg-btn active" data-val="bw">흑백 (100원)</button>
+                  <button type="button" class="seg-btn color-seg-btn" data-val="color">컬러 (300원)</button>
+                </div>
+              </div>
+
+              <!-- Copies Counter -->
+              <div class="option-group">
+                <label class="option-label">인쇄 부수</label>
+                <div class="stepper-box">
+                  <button type="button" id="btnCopiesMinus" class="stepper-btn">-</button>
+                  <span id="copiesVal" class="stepper-val">1</span>
+                  <button type="button" id="btnCopiesPlus" class="stepper-btn">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="options-grid" style="margin-bottom: 12px;">
+              <!-- Duplex -->
+              <div class="option-group">
+                <label class="option-label">양면 인쇄</label>
+                <div class="segmented-control">
+                  <button type="button" class="seg-btn duplex-seg-btn active" data-val="single">단면 인쇄</button>
+                  <button type="button" class="seg-btn duplex-seg-btn" data-val="double">양면 인쇄</button>
+                </div>
+              </div>
+
+              <!-- Paper -->
+              <div class="option-group">
+                <label class="option-label">용지 규격</label>
+                <div style="background: #050811; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 6px 10px; font-size: 12px; font-weight: 600; text-align: center;">
+                  A4 표준 용지
+                </div>
+              </div>
+            </div>
+
+            <!-- Price & Submit -->
+            <div class="price-bar">
+              <div>
+                <div class="price-title">최종 결제 금액</div>
+                <div id="priceSubNote" style="font-size: 11px; color: #34d399;">(입주사 무료 크레딧 0원 적용)</div>
+              </div>
+              <div id="displayTotalPrice" class="price-amount">0원</div>
+            </div>
+
+            <button type="button" id="btnSubmitPrint" class="btn-primary-action" disabled>
+              <span>⚡ 원클릭 인쇄 요청</span>
+            </button>
+
+            <!-- Success Issued PIN Result -->
+            <div id="pinResultCard" class="pin-result-card">
+              <div style="font-size: 12px; color: #a7f3d0; font-weight: 600;">🎉 승인 완료! 인쇄 보안 PIN 발급</div>
+              <div id="issuedPinCode" class="pin-code-huge">------</div>
+              <p id="pinResultDesc" style="font-size: 12px; color: #e2e8f0; line-height: 1.4;">
+                프린터 옆 키오스크에 위 6자리 번호를 입력하시면 즉시 출력됩니다!
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- B2B SaaS Shared Office Operations Dashboard -->
+    <section class="glass-panel" style="margin-top: 24px; border: 1px solid rgba(56, 189, 248, 0.25);">
+      <div class="panel-header" style="flex-wrap: wrap; gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 20px; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+            🏢
+          </div>
+          <div>
+            <h2 class="panel-title">공유오피스 B2B 관리자 대시보드 (Admin Hub)</h2>
+            <div style="font-size: 11px; color: var(--text-muted);">
+              지점: <b id="b2bBranchTitle" style="color: #f8fafc;">패스트파이브 강남 1호점</b> | SaaS 플랜: <span style="color: #34d399; font-weight: 600;">B2B Pro (월 49,000원)</span>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <a href="/api/b2b/monthly-report?format=csv" target="_blank" class="btn-sample-file" style="padding: 6px 12px; font-size: 12px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; border-color: rgba(56, 189, 248, 0.3); text-decoration: none;">
+            📥 10월 관리비 합산 CSV 다운로드
+          </a>
+          <button id="btnResetMonthly" class="btn-sample-file" style="padding: 6px 12px; font-size: 12px;">
+            🔄 월말 리셋 시뮬레이션
+          </button>
+        </div>
+      </div>
+
+      <!-- Realtime Tenants Quota Table -->
+      <div style="overflow-x: auto; margin-top: 14px;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left;">
+          <thead>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--text-muted);">
+              <th style="padding: 8px 10px;">입주사명</th>
+              <th style="padding: 8px 10px;">코드</th>
+              <th style="padding: 8px 10px;">흑백 쿼터 현황</th>
+              <th style="padding: 8px 10px;">컬러 쿼터 현황</th>
+              <th style="padding: 8px 10px;">초과 출력분</th>
+              <th style="padding: 8px 10px; text-align: right;">익월 관리비 청구액</th>
+            </tr>
+          </thead>
+          <tbody id="b2bTenantsTableBody">
+            <!-- Dynamically populated by app.js -->
+          </tbody>
+        </table>
+      </div>
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 11px; color: var(--text-muted);">
+        <span>💡 초과분은 입주사 대표의 익월 오피스 관리비/임대료 청구서에 자동 합산됩니다.</span>
+        <span id="b2bTotalOverageSummary" style="color: #f87171; font-weight: 600;">초과 과금 총액: 1,000원</span>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
