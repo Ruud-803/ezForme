@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ezForme - 현장 인쇄 안내 표지판 (A4 규격)</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800;900&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+    }
+
+    body {
+      background: #e2e8f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* Standard A4 Aspect Ratio Sheet */
+    .a4-sheet {
+      width: 210mm;
+      min-height: 297mm;
+      background: #ffffff;
+      padding: 16mm 18mm;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #0f172a;
+    }
+
+    /* Print media styling */
+    @media print {
+      body {
+        background: transparent;
+        padding: 0;
+      }
+      .a4-sheet {
+        box-shadow: none;
+        border-radius: 0;
+        width: 100%;
+        min-height: 100%;
+        padding: 12mm 15mm;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      border-bottom: 3px solid #0284c7;
+      padding-bottom: 12px;
+      margin-bottom: 18px;
+    }
+    .badge {
+      display: inline-block;
+      background: #0284c7;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+    .main-title {
+      font-size: 32px;
+      font-weight: 900;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .sub-title {
+      font-size: 15px;
+      color: #475569;
+      margin-top: 6px;
+      font-weight: 600;
+    }
+
+    /* Main Grid */
+    .content-box {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .qr-container {
+      background: #ffffff;
+      border: 2px solid #cbd5e1;
+      border-radius: 16px;
+      padding: 16px;
+      display: inline-block;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      margin-bottom: 12px;
+    }
+    .qr-container img {
+      width: 220px;
+      height: 220px;
+      display: block;
+    }
+
+    .scan-guide {
+      font-size: 20px;
+      font-weight: 800;
+      color: #0284c7;
+      margin-bottom: 6px;
+    }
+    .scan-sub {
+      font-size: 13px;
+      color: #64748b;
+      line-height: 1.5;
+    }
+
+    /* 3 Steps */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .step-card {
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 14px 10px;
+      text-align: center;
+    }
+    .step-num {
+      width: 26px;
+      height: 26px;
+      background: #0284c7;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+      margin: 0 auto 6px auto;
+    }
+    .step-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 4px;
+    }
+    .step-desc {
+      font-size: 11px;
+      color: #64748b;
+      line-height: 1.4;
+    }
+
+    /* Laptop access banner */
+    .laptop-banner {
+      background: #f0fdf4;
+      border: 1.5px dashed #22c55e;
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .laptop-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #15803d;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .laptop-url {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      color: #0f172a;
+      background: #ffffff;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid #86efac;
+      font-weight: 600;
+      word-break: break-all;
+    }
+
+    /* Price Table */
+    .price-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+    }
+    .price-table th, .price-table td {
+      border: 1px solid #e2e8f0;
+      padding: 8px 12px;
+      font-size: 12px;
+      text-align: center;
+    }
+    .price-table th {
+      background: #f8fafc;
+      font-weight: 700;
+      color: #475569;
+    }
+    .price-table td {
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    /* Footer Security */
+    .footer {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: #64748b;
+    }
+    .security-badge {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 700;
+      color: #059669;
+    }
+
+    /* Print Button Floating */
+    .floating-print-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0284c7;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 14px 28px;
+      font-size: 16px;
+      font-weight: 700;
+      box-shadow: 0 8px 20px rgba(2, 132, 199, 0.4);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      z-index: 1000;
+    }
+    .floating-print-btn:hover {
+      background: #0369a1;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+
+  <button class="floating-print-btn no-print" onclick="window.print()">
+    🖨️ A4 용지에 바로 인쇄하기
+  </button>
+
+  <div class="a4-sheet">
+    <!-- Header -->
+    <div class="header">
+      <span class="badge">NO DRIVER • NO APP • INSTANT PRINT</span>
+      <h1 class="main-title">🖨️ ezForme 무선 인쇄 스테이션</h1>
+      <p class="sub-title">드라이버 설치 0초 | 앱 다운로드 0개 | 내 폰에서 바로 인쇄</p>
+    </div>
+
+    <!-- Main QR Box -->
+    <div class="content-box">
+      <div class="qr-container">
+        <img src="/qr_live.png" width="220" height="220" alt="ezForme Live QR Code" style="display: block; margin: 0 auto;">
+      </div>
+      <div class="scan-guide">📱 스마트폰 카메라로 QR을 스캔하세요</div>
+      <div class="scan-sub">
+        별도 앱 설치 없이 스마트폰 기본 카메라로 비추면 바로 인쇄 웹페이지가 열립니다.
+      </div>
+    </div>
+
+    <!-- 3 Simple Steps -->
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-title">QR 스캔 & 파일 선택</div>
+        <div class="step-desc">카메라로 비추고 출력할 PDF/사진을 업로드하세요.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-title">옵션 선택 & 간편결제</div>
+        <div class="step-desc">흑백/컬러, 매수 선택 후 카카오/토스페이로 결제.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-title">6자리 PIN 입력 후 출력</div>
+        <div class="step-desc">발급받은 6자리 번호를 화면에 누르면 종이가 배출됩니다!</div>
+      </div>
+    </div>
+
+    <!-- Laptop Guide -->
+    <div class="laptop-banner">
+      <div class="laptop-title">
+        💻 노트북 이용자 접속 안내
+      </div>
+      <div class="laptop-url">
+        https://prevention-wagon-deutschland-seminar.trycloudflare.com
+      </div>
+    </div>
+
+    <!-- Pricing Table -->
+    <table class="price-table">
+      <thead>
+        <tr>
+          <th>구분</th>
+          <th>용지 규격</th>
+          <th>이용 요금</th>
+          <th>결제 방식</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>흑백 인쇄</td>
+          <td>A4 표준 용지</td>
+          <td><b>장당 100원</b></td>
+          <td rowspan="2">카카오페이 / 토스페이 / 신용카드 / 입주사 크레딧</td>
+        </tr>
+        <tr>
+          <td>컬러 인쇄</td>
+          <td>A4 표준 용지</td>
+          <td><b>장당 300원</b></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Footer Security Notice -->
+    <div class="footer">
+      <div class="security-badge">
+        🛡️ Zero-Trace 보안: 인쇄 완료 즉시 문서는 서버에서 영구 파기됩니다.
+      </div>
+      <div>
+        아이그리드(igrid) ezForme Station v1.0
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
