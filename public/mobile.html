@@ -136,13 +136,35 @@
       <span>⚡ 간편결제 & 인쇄 요청</span>
     </button>
 
-    <!-- Success Issued PIN Result -->
-    <div id="pinResultCard" class="pin-result-card">
-      <div style="font-size: 12px; color: #a7f3d0; font-weight: 600;">🎉 결제 완료! 인쇄 보안 PIN 발급</div>
-      <div id="issuedPinCode" class="pin-code-huge">------</div>
-      <p id="pinResultDesc" style="font-size: 12px; color: #e2e8f0; line-height: 1.4;">
-        프린터 옆 키오스크 화면에 위 6자리 번호를 입력하시면 즉시 인쇄됩니다!
+    <!-- Success & Zero-Kiosk Direct Remote Print Card -->
+    <div id="pinResultCard" class="pin-result-card" style="display: none;">
+      <div style="font-size: 13px; color: #a7f3d0; font-weight: 700;">🎉 결제 및 인쇄 승인 완료!</div>
+      
+      <!-- Big Zero-Kiosk Direct Print Remote Button -->
+      <button type="button" id="btnDirectPrintNow" class="btn-direct-print-pulse">
+        <span>🖨️ 프린터 앞 도착! 지금 바로 인쇄</span>
+      </button>
+
+      <p id="directPrintHelpText" style="font-size: 12px; color: #94a3b8; line-height: 1.5; margin-top: 10px;">
+        💡 프린터 앞으로 걸어가신 후 위 버튼을 누르면 <b>3초 만에 종이가 즉시 배출</b>됩니다!
       </p>
+
+      <!-- Status indicator during printing -->
+      <div id="directPrintStatus" style="display: none; margin-top: 14px; padding: 12px; background: rgba(0,0,0,0.3); border-radius: 8px;">
+        <div id="directPrintStatusTitle" style="font-size: 14px; font-weight: 700; color: #fbbf24;">📄 프린터에서 종이 출력 중...</div>
+        <div id="directPrintStatusSub" style="font-size: 11px; color: #94a3b8; margin-top: 4px;">출력 트레이에서 인쇄물을 확인해주세요.</div>
+      </div>
+
+      <!-- Backup PIN Box (For venues that DO have a kiosk terminal) -->
+      <div class="pin-backup-card">
+        <span>🖥️ 키오스크(태블릿)가 있는 매장인 경우:</span>
+        <strong id="issuedPinCode">------</strong>
+      </div>
+
+      <!-- Reset / Print Another Document -->
+      <button type="button" id="btnNewPrintJob" class="btn-new-print-reset" style="display: none;">
+        ✨ 다른 문서 추가 인쇄하기
+      </button>
     </div>
 
     <div style="margin-top: 24px; text-align: center; font-size: 11px; color: var(--text-dim);">

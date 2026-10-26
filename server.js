@@ -328,6 +328,36 @@ app.post('/api/jobs/print-by-pin', (req, res) => {
   });
 });
 
+// API 3-B: Direct Print Trigger from Mobile Web (Zero-Kiosk Mode)
+app.post('/api/jobs/:id/trigger-print', (req, res) => {
+  const job = jobs.get(req.params.id);
+  if (!job) {
+    return res.status(404).json({ error: '해당 인쇄 작업을 찾을 수 없습니다.' });
+  }
+
+  if (job.status === 'COMPLETED') {
+    return res.status(400).json({ error: '이미 출력이 완료된 작업입니다.' });
+  }
+
+  // Start Printing Process
+  job.status = 'PRINTING';
+  job.printStartedAt = new Date().toISOString();
+  broadcast('PRINT_STARTED', job);
+
+  // We simulate printing progress over 3.5 seconds
+  setTimeout(() => {
+    job.status = 'COMPLETED';
+    job.completedAt = new Date().toISOString();
+    broadcast('PRINT_COMPLETED', job);
+  }, 3500);
+
+  res.json({
+    success: true,
+    message: '프린터로 출력을 즉시 시작합니다.',
+    job
+  });
+});
+
 // API 4: Get Job Status
 app.get('/api/jobs/:id', (req, res) => {
   const job = jobs.get(req.params.id);

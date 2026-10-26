@@ -471,20 +471,74 @@ async function submitPrintJob() {
 function showMobilePinResult(job) {
   const card = document.getElementById('pinResultCard');
   const codeEl = document.getElementById('issuedPinCode');
-  const descEl = document.getElementById('pinResultDesc');
+  const btnDirect = document.getElementById('btnDirectPrintNow');
+  const statusBox = document.getElementById('directPrintStatus');
+  const statusTitle = document.getElementById('directPrintStatusTitle');
+  const statusSub = document.getElementById('directPrintStatusSub');
+  const btnNewJob = document.getElementById('btnNewPrintJob');
 
-  if (card && codeEl) {
-    codeEl.textContent = job.pin;
-    const b2bNote = (job.b2b && job.b2b.billingNote) ? `\n[${job.b2b.billingNote}]` : '';
-    descEl.textContent = `프린터 키오스크 화면에 6자리 PIN [${job.pin}]을 입력하시면 즉시 인쇄됩니다! ${b2bNote}`;
+  if (card) {
+    if (codeEl) codeEl.textContent = job.pin;
     card.style.display = 'block';
 
-    // Auto-fill kiosk PIN for ultra-smooth demo if in split-view!
+    // Auto-fill kiosk PIN if in split-view
     const kioskPinBox = document.getElementById('pinDisplayBox');
     if (kioskPinBox) {
       currentKioskPin = job.pin;
       kioskPinBox.textContent = job.pin;
       kioskPinBox.classList.add('focused');
+    }
+
+    if (btnDirect) {
+      btnDirect.className = 'btn-direct-print-pulse';
+      btnDirect.disabled = false;
+      btnDirect.innerHTML = '<span>🖨️ 프린터 앞 도착! 지금 바로 인쇄</span>';
+
+      btnDirect.onclick = async () => {
+        btnDirect.disabled = true;
+        btnDirect.className = 'btn-direct-print-pulse direct-print-active';
+        btnDirect.innerHTML = '<span>📄 프린터로 전송 중... (지잉- 징-)</span>';
+        
+        if (statusBox) {
+          statusBox.style.display = 'block';
+          statusTitle.textContent = '🖨️ 프린터 모터 가동 중...';
+          statusSub.textContent = '종이가 곧 배출됩니다. 트레이를 확인해주세요.';
+        }
+
+        soundFX.playPrintingSound(3.5);
+
+        try {
+          const res = await fetch(`/api/jobs/${job.id}/trigger-print`, {
+            method: 'POST'
+          });
+          const data = await res.json();
+
+          // Wait 3.5s for print completion simulation
+          setTimeout(() => {
+            soundFX.playSuccessChime();
+            btnDirect.className = 'btn-direct-print-pulse direct-print-done';
+            btnDirect.innerHTML = '<span>✅ 인쇄 완료! 출력물을 챙겨주세요</span>';
+            
+            if (statusBox) {
+              statusTitle.textContent = '🎉 출력이 완료되었습니다!';
+              statusTitle.style.color = '#34d399';
+              statusSub.textContent = '개인정보 보호를 위해 문서는 서버에서 영구 삭제되었습니다.';
+            }
+
+            if (btnNewJob) {
+              btnNewJob.style.display = 'block';
+              btnNewJob.onclick = () => {
+                window.location.reload();
+              };
+            }
+          }, 3500);
+
+        } catch (err) {
+          console.error(err);
+          btnDirect.disabled = false;
+          btnDirect.textContent = '❌ 출력 오류 발생 (다시 시도)';
+        }
+      };
     }
   }
 }
