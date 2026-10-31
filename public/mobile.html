@@ -6,6 +6,7 @@
   <title>ezForme - 드라이버 없는 초간편 무선 인쇄</title>
   <link rel="stylesheet" href="/css/style.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🖨️</text></svg>">
+  <script src="https://js.tosspayments.com/v1/payment"></script>
   <style>
     body {
       padding: 16px;
@@ -146,13 +147,34 @@
       </button>
 
       <p id="directPrintHelpText" style="font-size: 12px; color: #94a3b8; line-height: 1.5; margin-top: 10px;">
-        💡 프린터 앞으로 걸어가신 후 위 버튼을 누르면 <b>3초 만에 종이가 즉시 배출</b>됩니다!
+        💡 프린터 앞으로 이동하신 후 위 버튼을 누르면 <b>약 5초간 예열 후 종이가 배출</b>됩니다!
       </p>
 
-      <!-- Status indicator during printing -->
-      <div id="directPrintStatus" style="display: none; margin-top: 14px; padding: 12px; background: rgba(0,0,0,0.3); border-radius: 8px;">
-        <div id="directPrintStatusTitle" style="font-size: 14px; font-weight: 700; color: #fbbf24;">📄 프린터에서 종이 출력 중...</div>
-        <div id="directPrintStatusSub" style="font-size: 11px; color: #94a3b8; margin-top: 4px;">출력 트레이에서 인쇄물을 확인해주세요.</div>
+      <!-- Status indicator during printing (3-Stage Realistic Progress) -->
+      <div id="directPrintStatus" class="print-status-card" style="display: none;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+          <div id="directPrintStepBadge" class="status-step-badge badge-spooling">
+            📡 1단계: 전송 & 기기 예열
+          </div>
+          <span id="directPrintProgressPercent" style="font-size: 11px; color: #38bdf8; font-family: monospace; font-weight: 700;">35%</span>
+        </div>
+
+        <div id="directPrintStatusTitle" style="font-size: 14px; font-weight: 700; color: #38bdf8; line-height: 1.4;">
+          ⚙️ 프린터로 데이터 전송 및 모터 예열 중...
+        </div>
+        <div id="directPrintStatusSub" style="font-size: 12px; color: #94a3b8; margin-top: 4px; line-height: 1.4;">
+          고화질 렌더링 후 모터가 가동됩니다. 약 5~6초 후 종이가 배출됩니다.
+        </div>
+
+        <!-- Animated Progress Bar -->
+        <div class="print-progress-track">
+          <div id="directProgressBar" class="print-progress-bar" style="width: 35%;"></div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 10px; color: #64748b;">
+          <span>전송 ➔ 예열(5초) ➔ 출력 ➔ 완료</span>
+          <span id="directPrintStatusEta" style="color: #94a3b8;">약 5초 후 종이 배출</span>
+        </div>
       </div>
 
       <!-- Backup PIN Box (For venues that DO have a kiosk terminal) -->
@@ -167,8 +189,10 @@
       </button>
     </div>
 
-    <div style="margin-top: 24px; text-align: center; font-size: 11px; color: var(--text-dim);">
-      출력 완료 즉시 파일은 서버에서 영구 삭제됩니다 (Zero-Trace 보안 정책)
+    <div style="margin-top: 24px; text-align: center; font-size: 11px; color: var(--text-dim); line-height: 1.8;">
+      출력 완료 즉시 파일은 서버에서 영구 삭제됩니다 (Zero-Trace 보안 정책)<br>
+      <a href="/terms" target="_blank" style="color: #64748b; text-decoration: underline; margin-right: 12px;">이용약관</a>
+      <a href="/privacy" target="_blank" style="color: #64748b; text-decoration: underline;">개인정보처리방침</a>
     </div>
   </div>
 

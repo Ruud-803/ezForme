@@ -20,8 +20,8 @@ class PrinterSoundFX {
     }
   }
 
-  // Mechanical feed motor hum and chatter
-  playPrintingSound(durationSec = 3.5) {
+  // Mechanical feed motor hum and chatter (8s realistic duration)
+  playPrintingSound(durationSec = 8.0) {
     if (!this.enabled) return;
     this.init();
     const ctx = this.ctx;
@@ -31,8 +31,8 @@ class PrinterSoundFX {
     const motorOsc = ctx.createOscillator();
     const motorGain = ctx.createGain();
     motorOsc.type = 'sawtooth';
-    motorOsc.frequency.setValueAtTime(110, now);
-    motorOsc.frequency.exponentialRampToValueAtTime(140, now + durationSec * 0.7);
+    motorOsc.frequency.setValueAtTime(105, now);
+    motorOsc.frequency.exponentialRampToValueAtTime(145, now + durationSec * 0.7);
     motorGain.gain.setValueAtTime(0.08, now);
     motorGain.gain.exponentialRampToValueAtTime(0.001, now + durationSec);
     motorOsc.connect(motorGain);
@@ -40,14 +40,15 @@ class PrinterSoundFX {
     motorOsc.start(now);
     motorOsc.stop(now + durationSec);
 
-    // 2. Stepper Clicks (Periodic noise bursts)
-    for (let i = 0; i < 12; i++) {
-      const clickTime = now + (i * 0.28);
+    // 2. Stepper Clicks (Periodic mechanical noise bursts)
+    const totalClicks = Math.floor(durationSec / 0.3);
+    for (let i = 0; i < totalClicks; i++) {
+      const clickTime = now + (i * 0.3);
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = 'triangle';
-      osc.frequency.setValueAtTime(800 + (i % 2) * 200, clickTime);
-      gain.gain.setValueAtTime(0.05, clickTime);
+      osc.frequency.setValueAtTime(750 + (i % 3) * 150, clickTime);
+      gain.gain.setValueAtTime(0.04, clickTime);
       gain.gain.exponentialRampToValueAtTime(0.001, clickTime + 0.08);
       osc.connect(gain);
       gain.connect(ctx.destination);
@@ -96,6 +97,32 @@ let b2bState = {
 };
 let currentKioskPin = '';
 let ws = null;
+let tossClientKey = 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm';
+let tossPayments = null;
+
+// Initialize Toss Payments SDK
+async function initTossPayments() {
+  try {
+    const res = await fetch('/api/config');
+    if (res.ok) {
+      const data = await res.json();
+      if (data.tossClientKey) {
+        tossClientKey = data.tossClientKey;
+      }
+    }
+  } catch (e) {
+    console.warn('Config fetch error, using default test key:', e);
+  }
+
+  if (window.TossPayments) {
+    try {
+      tossPayments = TossPayments(tossClientKey);
+      console.log('✅ [ezForme] Toss Payments SDK Ready (Client Key:', tossClientKey, ')');
+    } catch (e) {
+      console.error('Toss Payments init error:', e);
+    }
+  }
+}
 
 // Initialize WebSocket
 function initWebSocket() {
@@ -148,9 +175,14 @@ function handleWsMessage(msg) {
   } else if (type === 'PRINT_STARTED') {
     updateHistoryItem(payload);
     triggerKioskPrintAnimation(payload);
+    setMobilePrintStage(payload, 1);
+  } else if (type === 'PRINT_IN_PROGRESS') {
+    updateHistoryItem(payload);
+    setMobilePrintStage(payload, 2);
   } else if (type === 'PRINT_COMPLETED') {
     updateHistoryItem(payload);
     finishKioskPrintAnimation(payload);
+    setMobilePrintStage(payload, 3);
   } else if (type === 'B2B_USAGE_UPDATED') {
     if (payload.allTenants) {
       b2bState.tenants = payload.allTenants;
@@ -247,14 +279,64 @@ function setupMobileHandlers() {
     }
   });
 
+  // Genuine A4 PDF Blob Generator
+  function generateValidSamplePdfBlob() {
+    const dateStr = new Date().toISOString().split('T')[0];
+    const streamContent = `BT
+/F1 22 Tf
+50 780 Td
+(ezForme Cloud Print Station) Tj
+0 -36 Td
+/F1 14 Tf
+(Hardware: Raspberry Pi 4B + Samsung SL-J1680) Tj
+0 -26 Td
+(Date: ${dateStr}) Tj
+0 -26 Td
+(Direct Mobile Wireless Printing - Success!) Tj
+0 -36 Td
+/F1 11 Tf
+(No printer driver installation required.) Tj
+0 -20 Td
+(Zero-Driver Universal Cloud Spooler Engine) Tj
+ET`;
+
+    const streamBytes = new TextEncoder().encode(streamContent);
+    const streamLen = streamBytes.length;
+
+    let pdf = "%PDF-1.4\n";
+    const offsets = [];
+
+    offsets.push(new TextEncoder().encode(pdf).length);
+    pdf += "1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n";
+
+    offsets.push(new TextEncoder().encode(pdf).length);
+    pdf += "2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n";
+
+    offsets.push(new TextEncoder().encode(pdf).length);
+    pdf += "3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>\nendobj\n";
+
+    offsets.push(new TextEncoder().encode(pdf).length);
+    pdf += `4 0 obj\n<< /Length ${streamLen} >>\nstream\n${streamContent}\nendstream\nendobj\n`;
+
+    offsets.push(new TextEncoder().encode(pdf).length);
+    pdf += "5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\n";
+
+    const xrefOffset = new TextEncoder().encode(pdf).length;
+    pdf += "xref\n0 6\n0000000000 65535 f \n";
+    for (const offset of offsets) {
+      pdf += `${String(offset).padStart(10, "0")} 00000 n \n`;
+    }
+    pdf += `trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF\n`;
+
+    return new Blob([pdf], { type: 'application/pdf' });
+  }
+
   // Sample file one-click generator
   if (btnSample) {
     btnSample.addEventListener('click', (e) => {
       e.stopPropagation();
-      const sampleBlob = new Blob([
-        `[ezForme 샘플 문서]\n\n문서명: 2026 스터디카페_발표자료_최종.pdf\n작성일: ${new Date().toLocaleDateString()}\n내용: 드라이버 설치 없이 3초 만에 무선 클라우드 인쇄 성공!`
-      ], { type: 'application/pdf' });
-      const sampleFile = new File([sampleBlob], '스터디카페_발표자료_최종.pdf', { type: 'application/pdf' });
+      const sampleBlob = generateValidSamplePdfBlob();
+      const sampleFile = new File([sampleBlob], 'ezForme_실증테스트_문서.pdf', { type: 'application/pdf' });
       handleFileSelected(sampleFile);
     });
   }
@@ -428,6 +510,8 @@ async function submitPrintJob() {
   formData.append('copies', printOptions.copies);
   formData.append('duplex', printOptions.duplex);
   formData.append('tenantCode', printOptions.tenantCode || '');
+  const stationPath = window.location.pathname.match(/^\/p\/([^/]+)\/?$/);
+  formData.append('stationId', stationPath ? decodeURIComponent(stationPath[1]) : 'STATION-01');
 
   try {
     const res = await fetch('/api/upload', {
@@ -448,15 +532,45 @@ async function submitPrintJob() {
     if (job.status === 'PAID') {
       showMobilePinResult(job);
     } else {
-      // Simulate Toss Payments instant card payment
-      btnSubmit.innerHTML = '<span>💳 토스페이먼츠 카드결제 승인 중...</span>';
-      const payRes = await fetch(`/api/jobs/${job.id}/pay`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ method: 'tosspayments_card' })
-      });
-      const payData = await payRes.json();
-      showMobilePinResult(job);
+      // Real Toss Payments Checkout Window
+      btnSubmit.innerHTML = '<span>💳 토스페이먼츠 결제창 여는 중...</span>';
+
+      if (tossPayments) {
+        try {
+          const safeOrderId = 'EZF_' + job.id.replace(/[^a-zA-Z0-9_-]/g, '') + '_' + Date.now().toString(36);
+          const currentOrigin = window.location.origin;
+
+          await tossPayments.requestPayment('카드', {
+            amount: job.totalPrice,
+            orderId: safeOrderId,
+            orderName: `${job.originalName || '인쇄문서'} (${job.totalPages}매 출력)`,
+            customerName: 'ezForme 이용자',
+            successUrl: `${currentOrigin}/payment/success?jobId=${job.id}`,
+            failUrl: `${currentOrigin}/payment/fail?jobId=${job.id}`
+          });
+        } catch (tossErr) {
+          console.error('Toss Payments Modal Error/Cancelled:', tossErr);
+          btnSubmit.disabled = false;
+          recalculatePrice();
+          if (tossErr.code === 'USER_CANCEL') {
+            btnSubmit.innerHTML = '<span>⚡ 간편결제 & 인쇄 요청</span>';
+          } else {
+            alert('토스 결제 오류: ' + (tossErr.message || '다시 시도해주세요.'));
+          }
+          return;
+        }
+      } else {
+        // Fallback simulation if Toss Payments SDK not loaded
+        console.warn('Toss Payments SDK not available, falling back to mock approval');
+        btnSubmit.innerHTML = '<span>💳 결제 승인 중...</span>';
+        const payRes = await fetch(`/api/jobs/${job.id}/pay`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ method: 'tosspayments_card' })
+        });
+        const payData = await payRes.json();
+        showMobilePinResult(job);
+      }
     }
 
   } catch (err) {
@@ -468,14 +582,136 @@ async function submitPrintJob() {
   }
 }
 
+// Active job for mobile view state synchronization & progress timers
+let currentActiveMobileJob = null;
+let printProgressTimer = null;
+
+function setMobilePrintStage(job, stage) {
+  const card = document.getElementById('pinResultCard');
+  if (!card) return;
+
+  const btnDirect = document.getElementById('btnDirectPrintNow');
+  const statusBox = document.getElementById('directPrintStatus');
+  const stepBadge = document.getElementById('directPrintStepBadge');
+  const statusTitle = document.getElementById('directPrintStatusTitle');
+  const statusSub = document.getElementById('directPrintStatusSub');
+  const progressBar = document.getElementById('directProgressBar');
+  const progressPercent = document.getElementById('directPrintProgressPercent');
+  const statusEta = document.getElementById('directPrintStatusEta');
+  const btnNewJob = document.getElementById('btnNewPrintJob');
+
+  if (stage === 1) {
+    // Stage 1: Spooling & Machine Warm-Up (0s ~ 5.0s)
+    if (statusBox) statusBox.style.display = 'block';
+    if (btnDirect) {
+      btnDirect.disabled = true;
+      btnDirect.className = 'btn-direct-print-pulse direct-print-spooling';
+      btnDirect.innerHTML = '<span>⏳ [1단계] 문서 전송 및 프린터 예열 중...</span>';
+    }
+    if (stepBadge) {
+      stepBadge.className = 'status-step-badge badge-spooling';
+      stepBadge.textContent = '📡 1단계: 전송 & 기기 예열';
+    }
+    if (statusTitle) {
+      statusTitle.textContent = '⚙️ 프린터로 데이터 전송 및 모터 예열 중...';
+      statusTitle.style.color = '#38bdf8';
+    }
+    if (statusSub) {
+      statusSub.textContent = '고화질 렌더링 후 모터가 가동됩니다. 약 5~6초 후 종이가 배출됩니다.';
+    }
+    if (progressBar) {
+      progressBar.style.width = '35%';
+      progressBar.style.background = 'linear-gradient(90deg, #38bdf8, #00f2fe)';
+    }
+    if (progressPercent) {
+      progressPercent.textContent = '35%';
+      progressPercent.style.color = '#38bdf8';
+    }
+    if (statusEta) {
+      statusEta.textContent = '약 5초 후 종이 배출';
+    }
+
+  } else if (stage === 2) {
+    // Stage 2: In-Progress Printing (5.0s ~ 8.5s) - "출력 중" 상태!
+    if (statusBox) statusBox.style.display = 'block';
+    if (btnDirect) {
+      btnDirect.disabled = true;
+      btnDirect.className = 'btn-direct-print-pulse direct-print-active';
+      btnDirect.innerHTML = '<span>📄 [2단계] 프린터에서 종이 출력 중... (지잉- 징-)</span>';
+    }
+    if (stepBadge) {
+      stepBadge.className = 'status-step-badge badge-printing';
+      stepBadge.textContent = '🖨️ 2단계: 실시간 종이 출력 중';
+    }
+    if (statusTitle) {
+      statusTitle.textContent = '📄 프린터에서 종이가 출력되고 있습니다!';
+      statusTitle.style.color = '#fbbf24';
+    }
+    if (statusSub) {
+      statusSub.textContent = '출력 트레이에서 배출되는 인쇄물을 확인해주세요.';
+    }
+    if (progressBar) {
+      progressBar.style.width = '85%';
+      progressBar.style.background = 'linear-gradient(90deg, #f59e0b, #fbbf24)';
+    }
+    if (progressPercent) {
+      progressPercent.textContent = '85%';
+      progressPercent.style.color = '#fbbf24';
+    }
+    if (statusEta) {
+      statusEta.textContent = '트레이로 배출 중...';
+    }
+
+  } else if (stage === 3) {
+    // Stage 3: Completed (8.5s+) - "출력 완료" 변환!
+    if (printProgressTimer) {
+      clearInterval(printProgressTimer);
+      printProgressTimer = null;
+    }
+
+    if (statusBox) statusBox.style.display = 'block';
+    if (btnDirect) {
+      btnDirect.disabled = true;
+      btnDirect.className = 'btn-direct-print-pulse direct-print-done';
+      btnDirect.innerHTML = '<span>✅ 인쇄 완료! 출력물을 챙겨주세요</span>';
+    }
+    if (stepBadge) {
+      stepBadge.className = 'status-step-badge badge-completed';
+      stepBadge.textContent = '🎉 3단계: 출력 완료';
+    }
+    if (statusTitle) {
+      statusTitle.textContent = '🎉 출력이 성공적으로 완료되었습니다!';
+      statusTitle.style.color = '#34d399';
+    }
+    if (statusSub) {
+      statusSub.textContent = '출력 트레이에서 인쇄물을 수령해주세요. Zero-Trace 정책에 따라 문서는 서버에서 영구 파기되었습니다.';
+    }
+    if (progressBar) {
+      progressBar.style.width = '100%';
+      progressBar.style.background = 'linear-gradient(90deg, #10b981, #34d399)';
+    }
+    if (progressPercent) {
+      progressPercent.textContent = '100%';
+      progressPercent.style.color = '#34d399';
+    }
+    if (statusEta) {
+      statusEta.textContent = '출력 완료 • 안전하게 파기됨';
+    }
+
+    if (btnNewJob) {
+      btnNewJob.style.display = 'block';
+      btnNewJob.onclick = () => {
+        window.location.reload();
+      };
+    }
+  }
+}
+
 function showMobilePinResult(job) {
+  currentActiveMobileJob = job;
   const card = document.getElementById('pinResultCard');
   const codeEl = document.getElementById('issuedPinCode');
   const btnDirect = document.getElementById('btnDirectPrintNow');
-  const statusBox = document.getElementById('directPrintStatus');
-  const statusTitle = document.getElementById('directPrintStatusTitle');
-  const statusSub = document.getElementById('directPrintStatusSub');
-  const btnNewJob = document.getElementById('btnNewPrintJob');
 
   if (card) {
     if (codeEl) codeEl.textContent = job.pin;
@@ -496,48 +732,40 @@ function showMobilePinResult(job) {
 
       btnDirect.onclick = async () => {
         btnDirect.disabled = true;
-        btnDirect.className = 'btn-direct-print-pulse direct-print-active';
-        btnDirect.innerHTML = '<span>📄 프린터로 전송 중... (지잉- 징-)</span>';
-        
-        if (statusBox) {
-          statusBox.style.display = 'block';
-          statusTitle.textContent = '🖨️ 프린터 모터 가동 중...';
-          statusSub.textContent = '종이가 곧 배출됩니다. 트레이를 확인해주세요.';
-        }
+        soundFX.playPrintingSound(8.0);
 
-        soundFX.playPrintingSound(3.5);
+        // 1단계: 즉시 전송 및 예열 모드 가동
+        setMobilePrintStage(job, 1);
 
         try {
-          const res = await fetch(`/api/jobs/${job.id}/trigger-print`, {
-            method: 'POST'
-          });
-          const data = await res.json();
-
-          // Wait 3.5s for print completion simulation
-          setTimeout(() => {
-            soundFX.playSuccessChime();
-            btnDirect.className = 'btn-direct-print-pulse direct-print-done';
-            btnDirect.innerHTML = '<span>✅ 인쇄 완료! 출력물을 챙겨주세요</span>';
-            
-            if (statusBox) {
-              statusTitle.textContent = '🎉 출력이 완료되었습니다!';
-              statusTitle.style.color = '#34d399';
-              statusSub.textContent = '개인정보 보호를 위해 문서는 서버에서 영구 삭제되었습니다.';
-            }
-
-            if (btnNewJob) {
-              btnNewJob.style.display = 'block';
-              btnNewJob.onclick = () => {
-                window.location.reload();
-              };
-            }
-          }, 3500);
-
+          fetch(`/api/jobs/${job.id}/trigger-print`, { method: 'POST' });
         } catch (err) {
           console.error(err);
-          btnDirect.disabled = false;
-          btnDirect.textContent = '❌ 출력 오류 발생 (다시 시도)';
         }
+
+        // 예열 시간 동안 부드럽게 프로그레스 바 전진
+        const progressBar = document.getElementById('directProgressBar');
+        const progressPercent = document.getElementById('directPrintProgressPercent');
+        let currentPct = 35;
+        if (printProgressTimer) clearInterval(printProgressTimer);
+        printProgressTimer = setInterval(() => {
+          if (currentPct < 55) {
+            currentPct += 5;
+            if (progressBar) progressBar.style.width = `${currentPct}%`;
+            if (progressPercent) progressPercent.textContent = `${currentPct}%`;
+          }
+        }, 1000);
+
+        // 2단계: 5초 후 실제 종이 출력 중으로 전환 ("출력 중")
+        setTimeout(() => {
+          setMobilePrintStage(job, 2);
+        }, 5000);
+
+        // 3단계: 8.5초 후 인쇄 완료로 화면 전환 ("출력완료")
+        setTimeout(() => {
+          soundFX.playSuccessChime();
+          setMobilePrintStage(job, 3);
+        }, 8500);
       };
     }
   }
@@ -627,18 +855,29 @@ function triggerKioskPrintAnimation(job) {
     led.className = 'printer-led busy';
   }
   if (statusText) {
-    statusText.textContent = `[PRINTING] ${job.originalName} (${job.totalPages}매 인쇄 중...)`;
-    statusText.style.color = '#fbbf24';
+    statusText.textContent = `[예열 및 스풀링] ${job.originalName} (${job.totalPages}매 준비 중... 약 5초)`;
+    statusText.style.color = '#38bdf8';
   }
   if (paperDocTitle) {
     paperDocTitle.textContent = `${job.originalName} (${job.colorMode === 'color' ? '컬러' : '흑백'})`;
   }
   if (paper) {
-    paper.classList.add('printing-active');
+    paper.classList.remove('printing-active');
   }
 
-  // Play mechanical printer sound!
-  soundFX.playPrintingSound(3.5);
+  // Play mechanical printer sound for 8.0s
+  soundFX.playPrintingSound(8.0);
+
+  // At 5.0s, physical paper actually begins feeding and sliding out!
+  setTimeout(() => {
+    if (paper) {
+      paper.classList.add('printing-active');
+    }
+    if (statusText) {
+      statusText.textContent = `[출력 진행 중] 종이 배출 중... (지잉- 징-)`;
+      statusText.style.color = '#fbbf24';
+    }
+  }, 5000);
 }
 
 function finishKioskPrintAnimation(job) {
@@ -724,9 +963,51 @@ function getStatusBadge(status) {
   }
 }
 
+// Handle returning from Toss Payments Success Redirect
+async function checkUrlParamsAndInit() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const jobId = urlParams.get('jobId');
+  const paid = urlParams.get('paid');
+
+  if (jobId && paid === '1') {
+    try {
+      const res = await fetch(`/api/jobs/${jobId}`);
+      if (res.ok) {
+        const job = await res.json();
+        if (job && (job.status === 'PAID' || job.status === 'COMPLETED')) {
+          console.log('🎉 [ezForme] Restoring paid session for Job:', job.id);
+          
+          // Hide upload dropzone, options, and price bar so user sees the direct print button
+          const dropzone = document.getElementById('dropzone');
+          const submitBtn = document.getElementById('btnSubmitPrint');
+          const optionsGrids = document.querySelectorAll('.options-grid');
+          const priceBar = document.querySelector('.price-bar');
+          
+          if (dropzone) dropzone.style.display = 'none';
+          if (submitBtn) submitBtn.style.display = 'none';
+          optionsGrids.forEach(el => el.style.display = 'none');
+          if (priceBar) priceBar.style.display = 'none';
+
+          // Show the result card & direct print remote button
+          showMobilePinResult(job);
+
+          // Clean up URL query parameters cleanly without reloading
+          if (window.history && window.history.replaceState) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+          }
+        }
+      }
+    } catch (e) {
+      console.error('Failed to restore paid job from URL params:', e);
+    }
+  }
+}
+
 // Global Init on DOM Load
 document.addEventListener('DOMContentLoaded', () => {
   initWebSocket();
+  initTossPayments();
+  checkUrlParamsAndInit();
   setupMobileHandlers();
   setupKioskHandlers();
 });

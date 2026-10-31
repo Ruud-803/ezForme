@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ezForme 무인 프린트 - 점주용 1분 자가설치 안내서</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: A5 portrait;
+      margin: 12mm;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+    }
+    body {
+      background: #f1f5f9;
+      color: #0f172a;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+    .card-wrap {
+      width: 100%;
+      max-width: 520px;
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 32px 28px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+    }
+    .badge {
+      display: inline-block;
+      background: #eff6ff;
+      color: #2563eb;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+    .title {
+      font-size: 24px;
+      font-weight: 900;
+      color: #0f172a;
+      line-height: 1.3;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      font-size: 14px;
+      color: #64748b;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 26px;
+    }
+    .step-box {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      background: #f8fafc;
+      padding: 16px;
+      border-radius: 14px;
+      border: 1px solid #e2e8f0;
+    }
+    .step-num {
+      width: 28px;
+      height: 28px;
+      background: #2563eb;
+      color: #ffffff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .step-content h3 {
+      font-size: 15px;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 4px;
+    }
+    .step-content p {
+      font-size: 13px;
+      color: #64748b;
+      line-height: 1.5;
+    }
+    .qr-section {
+      background: #eff6ff;
+      border: 1.5px dashed #93c5fd;
+      border-radius: 16px;
+      padding: 22px 18px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .qr-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #1e40af;
+      margin-bottom: 6px;
+    }
+    .qr-desc {
+      font-size: 12px;
+      color: #3b82f6;
+      margin-bottom: 14px;
+    }
+    .qr-frame {
+      display: inline-block;
+      background: #ffffff;
+      padding: 12px;
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.12);
+      margin-bottom: 8px;
+    }
+    .qr-image {
+      width: 170px;
+      height: 170px;
+      display: block;
+    }
+    .qr-note {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 6px;
+    }
+    .footer {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #94a3b8;
+    }
+    .contact {
+      font-weight: 700;
+      color: #2563eb;
+    }
+    .btn-print {
+      display: block;
+      width: 100%;
+      height: 44px;
+      background: #0f172a;
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 14px;
+    }
+    @media print {
+      body {
+        background: #ffffff;
+        padding: 0;
+      }
+      .card-wrap {
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        max-width: 100%;
+      }
+      .btn-print {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card-wrap">
+    <span class="badge">동봉 안내문 (상자 맨 위 배치)</span>
+    <h1 class="title">🖨️ ezForme 무인 프린트<br>1분 자가설치 안내서</h1>
+    <p class="subtitle">모니터나 키보드 없이, 스마트폰으로 딱 1분 만에 설치가 완료됩니다.</p>
+
+    <div class="steps">
+      <div class="step-box">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>케이블 2개 연결하기</h3>
+          <p>동봉된 <strong>USB 케이블</strong>을 프린터 뒷면에 꽂고, <strong>전원 어댑터</strong>를 콘센트에 꽂아주세요.</p>
+        </div>
+      </div>
+
+      <div class="step-box">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>스마트폰으로 QR코드 찍기</h3>
+          <p>스마트폰 카메라를 켜서 아래 <strong>[1분 설치 QR코드]</strong>를 비춰주세요.</p>
+        </div>
+      </div>
+
+      <div class="step-box">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>매장 와이파이 선택 후 완료!</h3>
+          <p>화면에 뜨는 창에서 <strong>우리 매장 와이파이</strong>를 선택하고 비밀번호를 입력하면 즉시 가동됩니다.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="qr-section">
+      <div class="qr-title">📱 스마트폰 카메라로 비춰주세요</div>
+      <div class="qr-desc">별도 앱 설치 없이 기본 카메라 앱으로 촬영하시면 됩니다.</div>
+      <div class="qr-frame">
+        <img src="/qr_wifi_page.png?v=live2" alt="Wi-Fi 1분 설정 QR" class="qr-image">
+      </div>
+      <div class="qr-note">※ QR 인식 시 자동으로 [매장 Wi-Fi 연결 페이지]가 열립니다.</div>
+      <div style="margin-top:6px; font-size:12px; font-weight:700; color:#2563eb; letter-spacing:0.2px;">http://192.168.45.195:3456/setup-wifi.html</div>
+    </div>
+
+    <div class="footer">
+      <span>아이그리드 (iGrid) | ezForme 파트너스</span>
+      <span class="contact">고객지원 1588-0000</span>
+    </div>
+
+    <button type="button" class="btn-print" onclick="window.print()">🖨️ 이 안내서 인쇄하기</button>
+  </div>
+</body>
+</html>

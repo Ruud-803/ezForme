@@ -5,12 +5,33 @@ const fs = require('fs');
 const multer = require('multer');
 const { WebSocketServer } = require('ws');
 const { exec } = require('child_process');
+const QRCode = require('qrcode');
+
+const BASE_DOMAIN = process.env.BASE_DOMAIN || 'https://ezforme.kr';
+
+// Load environment variables from .env
+const envPath = path.join(__dirname, '.env');
+if (fs.existsSync(envPath)) {
+  const envContent = fs.readFileSync(envPath, 'utf8');
+  envContent.split('\n').forEach(line => {
+    const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
+    if (match) {
+      const key = match[1];
+      let value = match[2] || '';
+      value = value.replace(/^['"](.*)['"]$/, '$1').trim();
+      process.env[key] = value;
+    }
+  });
+}
+
+const TOSS_CLIENT_KEY = process.env.TOSS_CLIENT_KEY || 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm';
+const TOSS_SECRET_KEY = process.env.TOSS_SECRET_KEY || 'test_gsk_docs_OaPz8L5KdmQXkzRz3y47BMw6';
 
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
-const PORT = process.env.PORT || 3456;
+const PORT = process.env.PORT || 3000;
 const UPLOAD_DIR = path.join(__dirname, 'uploads');
 
 if (!fs.existsSync(UPLOAD_DIR)) {
@@ -32,6 +53,46 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(UPLOAD_DIR));
+
+// PRD single-domain page routes. Keep the original split-view demo available.
+for (const [route, file] of Object.entries({
+  '/signup': 'signup.html',
+  '/admin': 'admin.html',
+  '/demo': 'demo.html',
+  '/kiosk': 'kiosk.html',
+  '/mobile': 'mobile.html',
+  '/print': 'mobile.html',
+  '/setup-wifi': 'setup-wifi.html',
+  '/install': 'partner-install-card.html',
+  '/terms': 'terms.html',
+  '/privacy': 'privacy.html',
+  '/stand': 'stand.html'
+})) {
+  app.get(route, (req, res) => res.sendFile(path.join(__dirname, 'public', file)));
+}
+app.get('/p/:stationId', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'mobile.html'));
+});
+
+// Dynamic QR Code Generator API for ezforme.kr
+app.get('/api/qr', async (req, res) => {
+  const { stationId, url, format = 'png' } = req.query;
+  const targetUrl = url || (stationId ? `${BASE_DOMAIN}/p/${stationId}` : `${BASE_DOMAIN}/mobile`);
+
+  try {
+    if (format === 'svg') {
+      const svg = await QRCode.toString(targetUrl, { type: 'svg', margin: 2 });
+      res.type('image/svg+xml').send(svg);
+    } else {
+      const buffer = await QRCode.toBuffer(targetUrl, { width: 500, margin: 2 });
+      res.type('image/png').send(buffer);
+    }
+  } catch (err) {
+    console.error('[QR GEN ERROR]', err);
+    res.status(500).json({ error: 'QR 코드 생성 실패' });
+  }
+});
+
 
 // --- B2B Shared Office & Tenant Data Models ---
 const branchConfig = {
@@ -278,7 +339,7 @@ app.post('/api/jobs/:id/pay', (req, res) => {
     return res.status(404).json({ error: '해당 인쇄 작업을 찾을 수 없습니다.' });
   }
 
-  const { method = 'tosspayments_card' } = req.body;
+  const { method = 'tosspayments_card' } = req.body || {};
   job.status = 'PAID';
   job.paymentMethod = method; // 'tosspayments_card', 'kakaopay', 'naverpay', 'tosspay'
   job.paidAt = new Date().toISOString();
@@ -293,9 +354,181 @@ app.post('/api/jobs/:id/pay', (req, res) => {
   });
 });
 
+// Config API: Public Toss Payments Client Key
+app.get('/api/config', (req, res) => {
+  res.json({
+    tossClientKey: TOSS_CLIENT_KEY
+  });
+});
+
+// API 2-B: Real Toss Payments Confirm API (Backend Verification)
+app.post('/api/payments/toss/confirm', async (req, res) => {
+  const { paymentKey, orderId, amount, jobId } = req.body || {};
+
+  if (!paymentKey || !orderId || !amount || !jobId) {
+    return res.status(400).json({ error: '필수 결제 승인 파라미터가 누락되었습니다.' });
+  }
+
+  const job = jobs.get(jobId);
+  if (!job) {
+    return res.status(404).json({ error: '해당 인쇄 작업을 찾을 수 없습니다.' });
+  }
+
+  // 1. Amount Verification (위변조 방지)
+  if (Number(amount) !== Number(job.totalPrice)) {
+    console.error(`[PAYMENT FRAUD ALERT] Job ${jobId} price mismatch: expected ${job.totalPrice}, got ${amount}`);
+    return res.status(400).json({ error: '결제 요청 금액과 승인 금액이 일치하지 않습니다.' });
+  }
+
+  try {
+    const basicAuth = Buffer.from(TOSS_SECRET_KEY + ':').toString('base64');
+    const tossRes = await fetch('https://api.tosspayments.com/v1/payments/confirm', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${basicAuth}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        paymentKey,
+        orderId,
+        amount: Number(amount)
+      })
+    });
+
+    const tossData = await tossRes.json();
+    if (!tossRes.ok) {
+      console.error('[TOSS CONFIRM FAILED]', tossData);
+      return res.status(400).json({
+        error: tossData.message || '토스페이먼츠 승인에 실패했습니다.',
+        code: tossData.code
+      });
+    }
+
+    // 2. Mark Job as PAID
+    job.status = 'PAID';
+    job.paymentMethod = tossData.method || '토스페이먼츠';
+    job.paymentKey = paymentKey;
+    job.orderId = orderId;
+    job.paidAt = tossData.approvedAt || new Date().toISOString();
+    job.tossPayment = {
+      method: tossData.method,
+      totalAmount: tossData.totalAmount,
+      card: tossData.card,
+      easyPay: tossData.easyPay,
+      receiptUrl: tossData.receipt?.url
+    };
+
+    jobs.set(job.id, job);
+    broadcast('JOB_PAID', job);
+
+    console.log(`[TOSS PAYMENT APPROVED] Job ${job.id} approved for ${job.totalPrice}원 via ${job.paymentMethod}`);
+
+    res.json({
+      success: true,
+      message: '토스페이먼츠 결제 승인이 완료되었습니다.',
+      job
+    });
+  } catch (err) {
+    console.error('[TOSS API EXCEPTION]', err);
+    res.status(500).json({ error: '토스 결제 서버와의 통신 중 오류가 발생했습니다.' });
+  }
+});
+
+// Toss Payments Browser Success Redirect Handler
+app.get('/payment/success', async (req, res) => {
+  const { paymentKey, orderId, amount, jobId } = req.query;
+
+  if (!paymentKey || !orderId || !amount || !jobId) {
+    return res.redirect('/payment/fail?message=' + encodeURIComponent('필수 결제 정보가 누락되었습니다.'));
+  }
+
+  const job = jobs.get(jobId);
+  if (!job) {
+    return res.redirect('/payment/fail?message=' + encodeURIComponent('인쇄 작업을 찾을 수 없습니다.'));
+  }
+
+  if (Number(amount) !== Number(job.totalPrice)) {
+    return res.redirect('/payment/fail?message=' + encodeURIComponent('결제 금액 위변조가 감지되었습니다.'));
+  }
+
+  try {
+    const basicAuth = Buffer.from(TOSS_SECRET_KEY + ':').toString('base64');
+    const tossRes = await fetch('https://api.tosspayments.com/v1/payments/confirm', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${basicAuth}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        paymentKey,
+        orderId,
+        amount: Number(amount)
+      })
+    });
+
+    const tossData = await tossRes.json();
+    if (!tossRes.ok) {
+      console.error('[TOSS REDIRECT CONFIRM ERROR]', tossData);
+      return res.redirect(`/payment/fail?jobId=${jobId}&message=` + encodeURIComponent(tossData.message || '승인 실패'));
+    }
+
+    job.status = 'PAID';
+    job.paymentMethod = tossData.method || '토스페이먼츠';
+    job.paymentKey = paymentKey;
+    job.orderId = orderId;
+    job.paidAt = tossData.approvedAt || new Date().toISOString();
+    job.tossPayment = {
+      method: tossData.method,
+      totalAmount: tossData.totalAmount,
+      card: tossData.card,
+      easyPay: tossData.easyPay,
+      receiptUrl: tossData.receipt?.url
+    };
+
+    jobs.set(job.id, job);
+    broadcast('JOB_PAID', job);
+
+    console.log(`[TOSS REDIRECT APPROVED] Job ${job.id} approved for ${job.totalPrice}원`);
+
+    // Redirect to mobile page with paid parameter
+    res.redirect(`/mobile.html?jobId=${job.id}&paid=1`);
+  } catch (err) {
+    console.error('[TOSS REDIRECT ERROR]', err);
+    res.redirect(`/payment/fail?jobId=${jobId}&message=` + encodeURIComponent('결제 승인 처리 중 네트워크 오류'));
+  }
+});
+
+// Toss Payments Browser Fail Redirect Handler
+app.get('/payment/fail', (req, res) => {
+  const { message = '결제가 취소되었거나 승인에 실패했습니다.', jobId } = req.query;
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>ezForme - 결제 실패</title>
+      <link rel="stylesheet" href="/css/style.css">
+      <style>
+        body { display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #090d16; padding: 20px; font-family: -apple-system, sans-serif; }
+        .fail-card { background: #0f172a; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 16px; padding: 32px 24px; max-width: 420px; width: 100%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+      </style>
+    </head>
+    <body>
+      <div class="fail-card">
+        <div style="font-size: 48px; margin-bottom: 12px;">⚠️</div>
+        <h2 style="font-size: 18px; color: #f87171; margin-bottom: 8px;">결제가 완료되지 않았습니다</h2>
+        <p style="font-size: 13px; color: #94a3b8; line-height: 1.5; margin-bottom: 24px;">${message}</p>
+        <a href="/mobile.html${jobId ? '?retryJob=' + jobId : ''}" style="display: block; background: #38bdf8; color: #0b1120; padding: 12px; border-radius: 8px; font-weight: 700; text-decoration: none;">다시 시도하기</a>
+      </div>
+    </body>
+    </html>
+  `);
+});
+
 // API 3: Trigger Print by 6-digit PIN (From Station Kiosk)
 app.post('/api/jobs/print-by-pin', (req, res) => {
-  const { pin } = req.body;
+  const { pin } = req.body || {};
   if (!pin) {
     return res.status(400).json({ error: '6자리 PIN 번호를 입력해주세요.' });
   }
@@ -309,17 +542,55 @@ app.post('/api/jobs/print-by-pin', (req, res) => {
     return res.status(400).json({ error: '이미 출력이 완료된 작업입니다.' });
   }
 
+  // Helper to trigger physical print spooling via CUPS lp
+  function buildLpOptions(job) {
+    const opts = ['-o PageSize=A4', '-o fit-to-page'];
+    if (job.copies && job.copies > 1) {
+      opts.push(`-n ${job.copies}`);
+    }
+    if (job.colorMode === 'bw') {
+      opts.push('-o ColorModel=KGray');
+    }
+    if (job.duplex === 'double') {
+      opts.push('-o sides=two-sided-long-edge');
+    }
+    return opts;
+  }
+
+  function triggerSpoolPrint(job) {
+    const filePath = path.join(UPLOAD_DIR, job.savedFileName);
+    const options = buildLpOptions(job);
+
+    const printCmd = `lp ${options.join(' ')} "${filePath}"`;
+    console.log(`[PRINT DISPATCH] Executing: ${printCmd}`);
+
+    exec(printCmd, (err, stdout, stderr) => {
+      if (err) {
+        console.warn(`[PRINT SPOOL WARNING] lp command: ${stderr || err.message}`);
+      } else {
+        console.log(`[PRINT SPOOL SUCCESS] Spooled job ${job.id}: ${stdout.trim()}`);
+      }
+    });
+
+    // Broadcast intermediate printing event when physical paper starts feeding (~5s)
+    setTimeout(() => {
+      broadcast('PRINT_IN_PROGRESS', job);
+    }, 5000);
+
+    // Broadcast completion when paper is fully ejected to tray (~8.5s)
+    setTimeout(() => {
+      job.status = 'COMPLETED';
+      job.completedAt = new Date().toISOString();
+      broadcast('PRINT_COMPLETED', job);
+    }, 8500);
+  }
+
   // Start Printing Process
   job.status = 'PRINTING';
   job.printStartedAt = new Date().toISOString();
   broadcast('PRINT_STARTED', job);
 
-  // We simulate printing progress over 3.5 seconds
-  setTimeout(() => {
-    job.status = 'COMPLETED';
-    job.completedAt = new Date().toISOString();
-    broadcast('PRINT_COMPLETED', job);
-  }, 3500);
+  triggerSpoolPrint(job);
 
   res.json({
     success: true,
@@ -344,12 +615,40 @@ app.post('/api/jobs/:id/trigger-print', (req, res) => {
   job.printStartedAt = new Date().toISOString();
   broadcast('PRINT_STARTED', job);
 
-  // We simulate printing progress over 3.5 seconds
+  const filePath = path.join(UPLOAD_DIR, job.savedFileName);
+  const options = ['-o PageSize=A4', '-o fit-to-page'];
+  if (job.copies && job.copies > 1) {
+    options.push(`-n ${job.copies}`);
+  }
+  if (job.colorMode === 'bw') {
+    options.push('-o ColorModel=KGray');
+  }
+  if (job.duplex === 'double') {
+    options.push('-o sides=two-sided-long-edge');
+  }
+
+  const printCmd = `lp ${options.join(' ')} "${filePath}"`;
+  console.log(`[PRINT DISPATCH] Executing: ${printCmd}`);
+
+  exec(printCmd, (err, stdout, stderr) => {
+    if (err) {
+      console.warn(`[PRINT SPOOL WARNING] lp command: ${stderr || err.message}`);
+    } else {
+      console.log(`[PRINT SPOOL SUCCESS] Spooled job ${job.id}: ${stdout.trim()}`);
+    }
+  });
+
+  // Broadcast intermediate printing event when physical paper starts feeding (~5s)
+  setTimeout(() => {
+    broadcast('PRINT_IN_PROGRESS', job);
+  }, 5000);
+
+  // Broadcast completion when paper is fully ejected to tray (~8.5s)
   setTimeout(() => {
     job.status = 'COMPLETED';
     job.completedAt = new Date().toISOString();
     broadcast('PRINT_COMPLETED', job);
-  }, 3500);
+  }, 8500);
 
   res.json({
     success: true,
@@ -535,13 +834,83 @@ app.get('/api/system/printers', (req, res) => {
   });
 });
 
-server.listen(PORT, () => {
+// API 7: Scan Nearby Wi-Fi Networks (For Partner Self-Setup)
+app.get('/api/wifi/scan', (req, res) => {
+  exec('nmcli -t -f SSID,SIGNAL,SECURITY dev wifi list --rescan yes', (err, stdout, stderr) => {
+    if (err) {
+      return res.json({
+        success: true,
+        networks: [
+          { ssid: '매장_5G_고객용', signal: 94, security: 'WPA2' },
+          { ssid: 'StudyCafe_Main_Wi-Fi', signal: 82, security: 'WPA2' },
+          { ssid: 'KT_GIGA_2G', signal: 68, security: 'WPA2' }
+        ]
+      });
+    }
+
+    const lines = (stdout || '').trim().split('\n');
+    const seen = new Set();
+    const networks = [];
+
+    for (const line of lines) {
+      const parts = line.split(':');
+      if (parts.length >= 2) {
+        const ssid = parts[0].trim();
+        const signal = parseInt(parts[1], 10) || 50;
+        const security = parts[2] || 'WPA2';
+        if (ssid && !seen.has(ssid) && ssid !== '--') {
+          seen.add(ssid);
+          networks.push({ ssid, signal, security });
+        }
+      }
+    }
+
+    res.json({
+      success: true,
+      networks: networks.sort((a, b) => b.signal - a.signal)
+    });
+  });
+});
+
+// API 8: Connect to Selected Store Wi-Fi
+app.post('/api/wifi/connect', (req, res) => {
+  const { ssid, password } = req.body || {};
+  if (!ssid) {
+    return res.status(400).json({ error: '와이파이 이름을 선택해 주세요.' });
+  }
+
+  const safeSsid = ssid.replace(/(["$`\\])/g, '\\$1');
+  const safePass = (password || '').replace(/(["$`\\])/g, '\\$1');
+  const cmd = password
+    ? `nmcli dev wifi connect "${safeSsid}" password "${safePass}"`
+    : `nmcli dev wifi connect "${safeSsid}"`;
+
+  console.log(`[WIFI SETUP] Attempting connection to SSID: ${ssid}`);
+  exec(cmd, (err, stdout, stderr) => {
+    if (err) {
+      console.warn(`[WIFI SETUP FAILED]: ${stderr || err.message}`);
+      return res.status(500).json({
+        success: false,
+        error: `와이파이 연결에 실패했습니다: ${stderr || err.message}`
+      });
+    }
+
+    console.log(`[WIFI SETUP SUCCESS]: ${stdout.trim()}`);
+    res.json({
+      success: true,
+      message: `'${ssid}' 와이파이에 성공적으로 연결되었습니다!`,
+      output: stdout.trim()
+    });
+  });
+});
+
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`=======================================================`);
   console.log(`🖨️  ezForme Station Server Running on http://localhost:${PORT}`);
   console.log(`🏢  B2B SaaS Shared Office Branch: ${branchConfig.branchName}`);
   console.log(`📱 Mobile User Interface: http://localhost:${PORT}/mobile.html`);
   console.log(`🖥️  Station Kiosk View:   http://localhost:${PORT}/kiosk.html`);
-  console.log(`🎛️  Dual Live Split View:  http://localhost:${PORT}/index.html`);
+  console.log(`🎛️  Dual Live Split View:  http://localhost:${PORT}/demo`);
   console.log(`📊 B2B Monthly CSV:       http://localhost:${PORT}/api/b2b/monthly-report?format=csv`);
   console.log(`=======================================================`);
 });

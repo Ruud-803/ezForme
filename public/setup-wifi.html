@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ezForme 무인 프린트 - 매장 Wi-Fi 1분 연결</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --success: #10b981;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --ring: rgba(37, 99, 235, 0.2);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 16px 40px;
+    }
+    .container {
+      width: 100%;
+      max-width: 440px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+      padding-top: 10px;
+    }
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #eff6ff;
+      color: var(--primary);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .title {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .card {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 24px 20px;
+      box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.08);
+      border: 1px solid var(--border);
+    }
+    .section-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .btn-refresh {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .wifi-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 240px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      padding-right: 2px;
+    }
+    .wifi-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      background: #f8fafc;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .wifi-item:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+    .wifi-item.selected {
+      border-color: var(--primary);
+      background: #eff6ff;
+    }
+    .wifi-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      overflow: hidden;
+    }
+    .wifi-icon {
+      font-size: 18px;
+      color: var(--text-muted);
+    }
+    .wifi-item.selected .wifi-icon {
+      color: var(--primary);
+    }
+    .wifi-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .wifi-signal {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .input-group {
+      margin-bottom: 20px;
+    }
+    .input-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .input-box {
+      width: 100%;
+      height: 48px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      padding: 0 16px;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .input-box:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--ring);
+    }
+    .btn-connect {
+      width: 100%;
+      height: 52px;
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+    .btn-connect:hover {
+      background: var(--primary-hover);
+    }
+    .btn-connect:disabled {
+      background: #cbd5e1;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+    /* Loading overlay */
+    .loading-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 0;
+      text-align: center;
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3.5px solid #e2e8f0;
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 16px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    /* Success Modal */
+    .success-card {
+      display: none;
+      text-align: center;
+      padding: 30px 10px;
+    }
+    .success-icon {
+      font-size: 54px;
+      margin-bottom: 16px;
+    }
+    .success-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #047857;
+      margin-bottom: 8px;
+    }
+    .success-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="logo-badge">🖨️ ezForme Partner Station</div>
+      <h1 class="title">매장 Wi-Fi 1분 연결</h1>
+      <p class="subtitle">프린터 단말기를 매장 와이파이에 연결하면<br>무인 인쇄 서비스가 즉시 활성화됩니다.</p>
+    </header>
+
+    <div class="card" id="mainCard">
+      <div class="section-label">
+        <span>주변 Wi-Fi 네트워크</span>
+        <button type="button" class="btn-refresh" id="btnRefresh">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+          새로고침
+        </button>
+      </div>
+
+      <div class="wifi-list" id="wifiList">
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p style="font-size:14px; color:#64748b;">주변 와이파이 신호 탐색 중...</p>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="txtPassword">Wi-Fi 비밀번호</label>
+        <input type="password" id="txtPassword" class="input-box" placeholder="와이파이 비밀번호를 입력해주세요">
+      </div>
+
+      <button type="button" class="btn-connect" id="btnConnect" disabled>
+        매장 Wi-Fi 연결하기
+      </button>
+    </div>
+
+    <!-- Success Screen -->
+    <div class="card success-card" id="successCard">
+      <div class="success-icon">🎉</div>
+      <h2 class="success-title">와이파이 연결 성공!</h2>
+      <p class="success-desc">
+        단말기가 매장 네트워크에 정상 접속되었습니다.<br>
+        <strong>3초 후 무인 인쇄 서비스가 자동 시작</strong>되며,<br>
+        고객이 QR을 찍어 바로 출력할 수 있습니다.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    let selectedSsid = '';
+    const wifiListEl = document.getElementById('wifiList');
+    const txtPassword = document.getElementById('txtPassword');
+    const btnConnect = document.getElementById('btnConnect');
+    const btnRefresh = document.getElementById('btnRefresh');
+    const mainCard = document.getElementById('mainCard');
+    const successCard = document.getElementById('successCard');
+
+    async function scanWifi() {
+      wifiListEl.innerHTML = `
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p style="font-size:14px; color:#64748b;">주변 와이파이 신호 탐색 중...</p>
+        </div>
+      `;
+      btnConnect.disabled = true;
+
+      try {
+        const res = await fetch('/api/wifi/scan');
+        const data = await res.json();
+        const networks = data.networks || [];
+
+        if (networks.length === 0) {
+          wifiListEl.innerHTML = `<p style="padding:20px; text-align:center; color:#64748b; font-size:14px;">검색된 와이파이가 없습니다. 새로고침을 눌러주세요.</p>`;
+          return;
+        }
+
+        wifiListEl.innerHTML = '';
+        networks.forEach(net => {
+          const item = document.createElement('div');
+          item.className = 'wifi-item';
+          item.innerHTML = `
+            <div class="wifi-info">
+              <span class="wifi-icon">📶</span>
+              <span class="wifi-name">${net.ssid}</span>
+            </div>
+            <span class="wifi-signal">${net.signal}%</span>
+          `;
+          item.addEventListener('click', () => {
+            document.querySelectorAll('.wifi-item').forEach(el => el.classList.remove('selected'));
+            item.classList.add('selected');
+            selectedSsid = net.ssid;
+            btnConnect.disabled = false;
+            btnConnect.textContent = `『${net.ssid}』 연결하기`;
+            txtPassword.focus();
+          });
+          wifiListEl.appendChild(item);
+        });
+
+      } catch (err) {
+        wifiListEl.innerHTML = `<p style="padding:20px; text-align:center; color:#ef4444; font-size:14px;">신호 탐색 오류: ${err.message}</p>`;
+      }
+    }
+
+    btnConnect.addEventListener('click', async () => {
+      if (!selectedSsid) return;
+
+      const password = txtPassword.value.trim();
+      btnConnect.disabled = true;
+      btnConnect.textContent = '연결 시도 중... (약 10초)';
+
+      try {
+        const res = await fetch('/api/wifi/connect', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ssid: selectedSsid, password })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          mainCard.style.display = 'none';
+          successCard.style.display = 'block';
+        } else {
+          alert('와이파이 연결 실패: ' + (data.error || '비밀번호를 확인해 주세요.'));
+          btnConnect.disabled = false;
+          btnConnect.textContent = `『${selectedSsid}』 연결하기`;
+        }
+      } catch (err) {
+        alert('서버 통신 오류: ' + err.message);
+        btnConnect.disabled = false;
+        btnConnect.textContent = `『${selectedSsid}』 연결하기`;
+      }
+    });
+
+    btnRefresh.addEventListener('click', scanWifi);
+    scanWifi();
+  </script>
+</body>
+</html>

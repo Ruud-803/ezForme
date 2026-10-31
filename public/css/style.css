@@ -716,15 +716,83 @@ body {
   }
 }
 
+.direct-print-spooling {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+  animation: pulse 1.2s infinite alternate !important;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.4) !important;
+}
+
 .direct-print-active {
   background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%) !important;
-  animation: pulse 0.8s infinite alternate !important;
+  animation: directPrintGlowAmber 1s infinite alternate !important;
+  box-shadow: 0 0 24px rgba(245, 158, 11, 0.6) !important;
 }
 
 .direct-print-done {
-  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%) !important;
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.4) !important;
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.5) !important;
   animation: none !important;
+}
+
+@keyframes directPrintGlowAmber {
+  0% { box-shadow: 0 0 15px rgba(245, 158, 11, 0.4); }
+  100% { box-shadow: 0 0 30px rgba(251, 191, 36, 0.85); }
+}
+
+/* 3-Stage Progress Card & Badges */
+.print-status-card {
+  margin-top: 14px;
+  padding: 14px 16px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+}
+
+.status-step-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+
+.badge-spooling {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.badge-printing {
+  background: rgba(245, 158, 11, 0.18);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  animation: pulse 0.9s infinite alternate;
+}
+
+.badge-completed {
+  background: rgba(52, 211, 153, 0.18);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.35);
+}
+
+.print-progress-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 12px;
+}
+
+.print-progress-bar {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #38bdf8, #00f2fe);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1), background 0.4s ease;
 }
 
 .pin-backup-card {
