@@ -7,3 +7,209 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}}
 @media(max-width:760px){.nav{gap:12px}.nav-actions>a[href="/admin"]{display:none}.nav-actions .button{white-space:nowrap}}
 @media(max-width:420px){.product-scene{transform:scale(.44);top:16px}.hero-copy br{display:initial}}
+
+
+/* ==========================================================
+   ezForme B2B SaaS Regular Subscription & Pricing Enhancements
+   (PG Examination & Compliance)
+   ========================================================== */
+.pricing-category-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 36px 0 18px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--ink);
+}
+.pricing-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
+  margin-bottom: 25px;
+}
+.pricing-tier-card {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.pricing-tier-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+}
+.pricing-tier-card.featured {
+  border: 2px solid var(--blue);
+  background: #fcfcff;
+}
+.pricing-tier-card.featured::before {
+  content: '추천 플랜';
+  position: absolute;
+  top: -12px;
+  right: 24px;
+  background: var(--blue);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 20px;
+  letter-spacing: -0.02em;
+}
+.tier-header {
+  margin-bottom: 18px;
+}
+.tier-header .tier-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--blue);
+  background: #eeedff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+.tier-header h3 {
+  font-size: 21px;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.tier-header p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.tier-price {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.04em;
+  margin-bottom: 18px;
+  padding-bottom: 18px;
+  border-bottom: 1px dashed var(--line);
+}
+.tier-price small {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  margin-left: 4px;
+}
+.tier-price .vat-note {
+  display: block;
+  font-size: 11px;
+  font-weight: 400;
+  color: #8c909b;
+  margin-top: 4px;
+  letter-spacing: 0;
+}
+.tier-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+.tier-features li {
+  font-size: 12.5px;
+  color: #3b404d;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.5;
+}
+.tier-features li::before {
+  content: '✓';
+  color: var(--blue);
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.billing-info-box {
+  background: #f6f7fb;
+  border: 1px solid #e2e4ed;
+  border-radius: 12px;
+  padding: 22px 24px;
+  margin: 25px 0 35px;
+}
+.billing-info-box h4 {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.billing-info-box ul {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 12px;
+  color: #4f5564;
+  line-height: 1.8;
+}
+.billing-info-box ul li {
+  margin-bottom: 4px;
+}
+.billing-info-box strong {
+  color: var(--ink);
+}
+
+/* Footer improvements */
+.footer-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #8c909b;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.footer-info p {
+  margin: 0;
+}
+.footer-info strong {
+  color: #505460;
+  font-weight: 600;
+}
+.footer-info .sep {
+  margin: 0 8px;
+  color: #d0d2d8;
+}
+.biz-info-link {
+  color: var(--blue);
+  text-decoration: underline;
+  margin-left: 4px;
+  font-size: 10px;
+}
+.biz-info-link:hover {
+  color: var(--indigo);
+}
+.footer-info .copyright {
+  margin-top: 6px;
+  font-size: 10px;
+  color: #a4a7b0;
+}
+
+@media(max-width:760px) {
+  .pricing-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  .pricing-category-title {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .footer-info .sep {
+    display: none;
+  }
+  .footer-info span {
+    display: block;
+  }
+}
