@@ -4,6 +4,7 @@ services:
     runtime: node
     plan: free
     region: singapore
+    autoDeploy: true
     buildCommand: npm install
     startCommand: node server.js
     envVars:
