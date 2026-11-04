@@ -213,3 +213,23 @@
     display: block;
   }
 }
+
+
+/* ==========================================================
+   Korean Typography & Layout Balance (Prevent Syllable Breaking)
+   ========================================================== */
+body, h1, h2, h3, h4, h5, h6, p, span, li, td, th, label, small, strong, em, button, a {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+.section-description {
+  max-width: 480px;
+  word-break: keep-all;
+  line-height: 1.7;
+}
+.tier-header p, .tier-features li, .billing-info-box ul li {
+  word-break: keep-all;
+}
+.hero-copy {
+  word-break: keep-all;
+}
