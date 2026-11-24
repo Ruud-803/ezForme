@@ -498,7 +498,7 @@ function recalculatePrice() {
     }
     if (priceEl) priceEl.textContent = `${normalPrice.toLocaleString()}원`;
     if (noteEl) {
-      noteEl.textContent = '(토스페이먼츠 신용카드 / 간편결제)';
+      noteEl.textContent = '(신용카드 / 간편결제 PG)';
       noteEl.style.color = '#94a3b8';
     }
     if (btnSubmit && selectedFile) {
@@ -545,7 +545,7 @@ async function submitPrintJob() {
       showMobilePinResult(job);
     } else {
       // Real Toss Payments Checkout Window
-      btnSubmit.innerHTML = '<span>💳 토스페이먼츠 결제창 여는 중...</span>';
+      btnSubmit.innerHTML = '<span>💳 PG 결제창 여는 중...</span>';
 
       if (tossPayments) {
         try {

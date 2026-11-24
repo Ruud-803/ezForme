@@ -102,7 +102,7 @@ guestCheckoutForm?.addEventListener('submit', async event => {
     const cfg = await cfgRes.json();
     const clientKey = cfg.tossClientKey || 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm';
     if (typeof TossPayments === 'undefined') {
-      throw new Error('토스페이먼츠 SDK를 불러오지 못했습니다.');
+      throw new Error('결제 모듈(PG SDK)을 불러오지 못했습니다.');
     }
     const tossPayments = TossPayments(clientKey);
     const orderId = `EZF_B2B_${selectedPlan.id.toUpperCase()}_${Date.now().toString(36)}`;
