@@ -1,28 +1,114 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ezForme - 개인정보처리방침</title>
   <link rel="stylesheet" href="/css/site.css">
   <style>
-    .legal-page { padding: 40px 0 80px; max-width: 860px; margin: 0 auto; }
-    .legal-header { margin-bottom: 40px; border-bottom: 2px solid var(--line); padding-bottom: 20px; }
-    .legal-header h1 { font-size: 32px; font-weight: 800; margin-bottom: 10px; }
-    .legal-meta { color: var(--muted); font-size: 13px; display: flex; gap: 20px; }
-    .legal-content section { margin-bottom: 35px; }
-    .legal-content h2 { font-size: 20px; font-weight: 700; margin-bottom: 14px; color: var(--ink); border-left: 4px solid var(--blue); padding-left: 10px; }
-    .legal-content h3 { font-size: 16px; font-weight: 600; margin: 16px 0 8px; color: var(--indigo); }
-    .legal-content p, .legal-content li { color: #404553; line-height: 1.8; font-size: 14px; margin-bottom: 8px; }
-    .legal-content ul, .legal-content ol { padding-left: 22px; margin-bottom: 14px; }
-    .legal-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
-    .legal-table th, .legal-table td { border: 1px solid var(--line); padding: 12px 14px; text-align: left; }
-    .legal-table th { background: #f3f3f9; color: var(--ink); font-weight: 600; }
-    .highlight-box { background: #eef7f3; border-radius: 12px; padding: 18px 22px; margin: 15px 0; border: 1px solid #cce8dc; }
-    .highlight-box strong { color: #1e6d4c; display: block; margin-bottom: 6px; font-size: 14px; }
-    .highlight-box p { margin: 0; font-size: 13px; color: #2e5944; }
+    .legal-page {
+      padding: 40px 0 80px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .legal-header {
+      margin-bottom: 40px;
+      border-bottom: 2px solid var(--line);
+      padding-bottom: 20px;
+    }
+
+    .legal-header h1 {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .legal-meta {
+      color: var(--muted);
+      font-size: 13px;
+      display: flex;
+      gap: 20px;
+    }
+
+    .legal-content section {
+      margin-bottom: 35px;
+    }
+
+    .legal-content h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: var(--ink);
+      border-left: 4px solid var(--blue);
+      padding-left: 10px;
+    }
+
+    .legal-content h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 16px 0 8px;
+      color: var(--indigo);
+    }
+
+    .legal-content p,
+    .legal-content li {
+      color: #404553;
+      line-height: 1.8;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .legal-content ul,
+    .legal-content ol {
+      padding-left: 22px;
+      margin-bottom: 14px;
+    }
+
+    .legal-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 13px;
+    }
+
+    .legal-table th,
+    .legal-table td {
+      border: 1px solid var(--line);
+      padding: 12px 14px;
+      text-align: left;
+    }
+
+    .legal-table th {
+      background: #f3f3f9;
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .highlight-box {
+      background: #eef7f3;
+      border-radius: 12px;
+      padding: 18px 22px;
+      margin: 15px 0;
+      border: 1px solid #cce8dc;
+    }
+
+    .highlight-box strong {
+      color: #1e6d4c;
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .highlight-box p {
+      margin: 0;
+      font-size: 13px;
+      color: #2e5944;
+    }
   </style>
 </head>
+
 <body>
   <!-- Header / Navigation -->
   <header class="wrap">
@@ -50,11 +136,13 @@
     </div>
 
     <article class="legal-content">
-      <p>아이그리드(이하 "회사")는 「개인정보 보호법」 제30조에 따라 정보주체의 개인정보를 보호하고 이와 관련한 고충을 신속하고 원활하게 처리할 수 있도록 하기 위하여 다음과 같이 개인정보 처리방침을 수립·공개합니다.</p>
+      <p>아이그리드(이하 "회사")는 「개인정보 보호법」 제30조에 따라 정보주체의 개인정보를 보호하고 이와 관련한 고충을 신속하고 원활하게 처리할 수 있도록 하기 위하여 다음과 같이 개인정보 처리방침을
+        수립·공개합니다.</p>
 
       <section>
         <h2>제1조 (개인정보의 처리 목적)</h2>
-        <p>회사는 다음의 목적을 위하여 개인정보를 처리합니다. 처리하고 있는 개인정보는 다음의 목적 이외의 용도로는 이용되지 않으며, 이용 목적이 변경되는 경우에는 별도의 동의를 받는 등 필요한 조치를 이행할 예정입니다.</p>
+        <p>회사는 다음의 목적을 위하여 개인정보를 처리합니다. 처리하고 있는 개인정보는 다음의 목적 이외의 용도로는 이용되지 않으며, 이용 목적이 변경되는 경우에는 별도의 동의를 받는 등 필요한 조치를
+          이행할 예정입니다.</p>
         <ol>
           <li><strong>B2C 무인 인쇄 서비스 제공</strong>: 업로드된 문서의 현장 인쇄 스풀링, 6자리 일회용 PIN 인증 및 종이 배출 제어</li>
           <li><strong>이용 요금 결제 및 환불</strong>: 건당 인쇄비 결제 승인, 출력 실패 시 자동 환불, B2B SaaS 신용카드 정기결제(구독료) 청구</li>
@@ -77,7 +165,8 @@
           <tbody>
             <tr>
               <td><strong>B2C 인쇄 이용자</strong></td>
-              <td>• <strong>인쇄 문서 파일</strong> (PDF, 이미지)<br>• <strong>결제 승인 데이터</strong>: 결제키(paymentKey), 주문번호, 금액, 결제수단명<br>• <strong>기기 정보</strong>: 접속 IP, 브라우저 정보, 발급 PIN</td>
+              <td>• <strong>인쇄 문서 파일</strong> (PDF, 이미지)<br>• <strong>결제 승인 데이터</strong>: 결제키(paymentKey), 주문번호, 금액,
+                결제수단명<br>• <strong>기기 정보</strong>: 접속 IP, 브라우저 정보, 발급 PIN</td>
               <td>웹페이지 파일 업로드 및 결제 시 자동 수집</td>
               <td><strong>• 인쇄 파일: 인쇄 완료 즉시 영구 파기 (Zero-Trace)</strong><br>• 결제 내역: 전자상거래법에 따라 5년 보관</td>
             </tr>
@@ -91,13 +180,15 @@
         </table>
         <div class="highlight-box">
           <strong>💳 결제 카드 정보 안전 처리 안내 (전자금융거래법 준수)</strong>
-          <p>고객의 신용카드 번호, 유효기간, CVC 등 민감한 금융 정보는 당사 서버에 일체 저장되지 않습니다. 모든 결제 및 정기결제 승인은 금융보안 인증을 획득한 공인 전자결제대행사(토스페이먼츠, 포트원)의 암호화 시스템을 통해 안전하게 처리됩니다.</p>
+          <p>고객의 신용카드 번호, 유효기간, CVC 등 민감한 금융 정보는 당사 서버에 일체 저장되지 않습니다. 모든 결제 및 정기결제 승인은 금융보안 인증을 획득한 공인 전자결제대행사(토스페이먼츠,
+            포트원)의 암호화 시스템을 통해 안전하게 처리됩니다.</p>
         </div>
       </section>
 
       <section>
         <h2>제3조 (개인정보의 처리 및 보유 기간)</h2>
-        <p>1. <strong>인쇄 대상 파일</strong>: <strong>인쇄 작업 완료(COMPLETED) 즉시 100% 영구 파기</strong> (미출력 대기 시 업로드 후 최대 1시간 후 자동 파기)</p>
+        <p>1. <strong>인쇄 대상 파일</strong>: <strong>인쇄 작업 완료(COMPLETED) 즉시 100% 영구 파기</strong> (미출력 대기 시 업로드 후 최대 1시간 후 자동
+          파기)</p>
         <p>2. <strong>관련 법령에 따른 의무 보유</strong>:</p>
         <ul>
           <li>계약 또는 청약철회 등에 관한 기록: <strong>5년</strong> (전자상거래 등에서의 소비자보호에 관한 법률)</li>
@@ -111,7 +202,8 @@
         <h2>제4조 (인쇄 문서의 특화 파기 규정 - Zero-Trace 정책)</h2>
         <div class="highlight-box">
           <strong>🛡️ Zero-Trace 클라우드 인쇄 보안 정책</strong>
-          <p>회사는 주민등록등본, 금융 거래 명세서, 계약서 등 인쇄 문서의 보안을 철저히 보장합니다. 업로드된 파일은 오직 프린터로의 전송 목적으로만 임시 적재되며, 종이 출력이 끝나는 즉시 디스크 덮어쓰기 알고리즘을 통해 100% 영구 파기(Shredding)됩니다. 회사의 임직원은 어떠한 경우에도 고객의 문서를 열람하거나 백업본을 보관하지 않습니다.</p>
+          <p>회사는 주민등록등본, 금융 거래 명세서, 계약서 등 인쇄 문서의 보안을 철저히 보장합니다. 업로드된 파일은 오직 프린터로의 전송 목적으로만 임시 적재되며, 종이 출력이 끝나는 즉시 디스크
+            덮어쓰기 알고리즘을 통해 100% 영구 파기(Shredding)됩니다. 회사의 임직원은 어떠한 경우에도 고객의 문서를 열람하거나 백업본을 보관하지 않습니다.</p>
         </div>
       </section>
 
@@ -178,7 +270,8 @@
         <p>회사는 개인정보 처리에 관한 업무를 총괄해서 책임지고, 정보주체의 고충처리 및 피해구제를 위하여 아래와 같이 개인정보 보호책임자를 지정하고 있습니다.</p>
         <div class="highlight-box">
           <strong>👤 개인정보 보호책임자 (CPO)</strong>
-          <p>• 성명: 마성균<br>• 직책: 대표 / 개인정보보호책임자<br>• 소속: 아이그리드 (IGRID)<br>• 연락처: 010-3180-1105<br>• 문의처: ruud.igrid@gmail.com</p>
+          <p>• 성명: 마성균<br>• 직책: 대표 / 개인정보보호책임자<br>• 소속: 아이그리드 (IGRID)<br>• 연락처: 010-3180-1105<br>• 문의처:
+            ruud.igrid@gmail.com</p>
         </div>
       </section>
 
@@ -219,7 +312,8 @@
         <div class="footer-info">
           <p><strong>아이그리드 (IGRID)</strong> &nbsp;|&nbsp; 대표자: 마성균 &nbsp;|&nbsp; 개인정보보호책임자: 마성균</p>
           <p>
-            <span>사업자등록번호: 468-30-02050 <a href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=4683002050" target="_blank" rel="noopener noreferrer" class="biz-info-link">[사업자정보확인 ↗]</a></span>
+            <span>사업자등록번호: 468-30-02050 <a href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=4683002050" target="_blank"
+                rel="noopener noreferrer" class="biz-info-link">[사업자정보확인 ↗]</a></span>
             <span class="sep">|</span>
             <span>통신판매업신고번호: 2026-서울서대문-1070호</span>
           </p>
@@ -228,7 +322,8 @@
             <span class="sep">|</span>
             <span>고객센터: 010-3180-1105</span>
             <span class="sep">|</span>
-            <span>이메일: <a href="mailto:ruud.igrid@gmail.com" style="color:inherit;text-decoration:underline;">ruud.igrid@gmail.com</a></span>
+            <span>이메일: <a href="mailto:ruud.igrid@gmail.com"
+                style="color:inherit;text-decoration:underline;">ruud.igrid@gmail.com</a></span>
           </p>
           <p class="copyright">© 2026 IGRID. All rights reserved.</p>
         </div>
@@ -236,4 +331,5 @@
     </div>
   </footer>
 </body>
+
 </html>

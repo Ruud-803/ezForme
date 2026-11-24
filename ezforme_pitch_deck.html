@@ -1,19 +1,25 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ezForme IR Pitch Deck - 제로 드라이버 무선 클라우드 프린팅 플랫폼</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Pretendard:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Pretendard:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
   <style>
     @page {
-      size: 297mm 210mm; /* A4 Landscape */
+      size: 297mm 210mm;
+      /* A4 Landscape */
       margin: 0;
     }
 
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
@@ -73,7 +79,8 @@
       gap: 6px;
       height: 26px;
       line-height: 1;
-      padding: 2px 12px 0 12px; /* optical vertical center */
+      padding: 2px 12px 0 12px;
+      /* optical vertical center */
       background: #eff6ff;
       border: 1px solid #bfdbfe;
       border-radius: 9999px;
@@ -223,17 +230,38 @@
       justify-content: center;
       height: 26px;
       line-height: 1;
-      padding: 2px 10px 0 10px; /* optical vertical center */
+      padding: 2px 10px 0 10px;
+      /* optical vertical center */
       border-radius: 6px;
       font-size: 11px;
       font-weight: 700;
       white-space: nowrap;
       box-sizing: border-box;
     }
-    .pill-danger { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
-    .pill-success { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
-    .pill-info { background: #f0f9ff; color: #0284c7; border: 1px solid #bae6fd; }
-    .pill-warn { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
+
+    .pill-danger {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+
+    .pill-success {
+      background: #f0fdf4;
+      color: #16a34a;
+      border: 1px solid #bbf7d0;
+    }
+
+    .pill-info {
+      background: #f0f9ff;
+      color: #0284c7;
+      border: 1px solid #bae6fd;
+    }
+
+    .pill-warn {
+      background: #fffbeb;
+      color: #d97706;
+      border: 1px solid #fde68a;
+    }
 
     /* ==========================================
        SLIDE 1: COVER
@@ -539,7 +567,143 @@
     }
 
     /* ==========================================
-       SLIDE 4: ARCHITECTURE & UX FLOW
+       SLIDE 4: STRATEGIC INSIGHT (PUBLIC PC PARADOX)
+       ========================================== */
+    .insight-banner {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-left: 4px solid #0284c7;
+      border-radius: 8px;
+      padding: 8px 14px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      word-break: keep-all;
+    }
+
+    .insight-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #0284c7;
+      color: #ffffff;
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .insight-text {
+      font-size: 12px;
+      color: #1e293b;
+      line-height: 1.45;
+      word-break: keep-all;
+    }
+
+    .solution-card {
+      background: #ffffff;
+      border: 1px solid #bbf7d0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: none !important;
+      word-break: keep-all;
+    }
+
+    .solution-card.highlight-blue {
+      border: 1px solid #bae6fd;
+    }
+
+    .solution-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 11.5px;
+      color: #334155;
+      line-height: 1.4;
+      word-break: keep-all;
+    }
+
+    .solution-bullet {
+      width: 19px;
+      height: 19px;
+      min-width: 19px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 800;
+      margin-top: 1px;
+    }
+
+    .solution-bullet.green {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #16a34a;
+    }
+
+    .solution-bullet.blue {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      color: #0284c7;
+    }
+
+    .penetration-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      word-break: keep-all;
+    }
+
+    .penetration-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .penetration-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .penetration-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      padding: 6px 10px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+    }
+
+    .penetration-case {
+      font-size: 11px;
+      font-weight: 800;
+      color: #0284c7;
+    }
+
+    .penetration-case.green {
+      color: #16a34a;
+    }
+
+    .penetration-desc {
+      font-size: 11px;
+      color: #475569;
+      line-height: 1.4;
+      word-break: keep-all;
+    }
+
+    /* ==========================================
+       SLIDE 5: ARCHITECTURE & UX FLOW
        ========================================== */
     .step-box {
       background: #ffffff;
@@ -770,8 +934,15 @@
       margin-bottom: 5px;
     }
 
-    .split-platform { background: #0284c7; width: 40%; }
-    .split-owner { background: #16a34a; width: 60%; }
+    .split-platform {
+      background: #0284c7;
+      width: 40%;
+    }
+
+    .split-owner {
+      background: #16a34a;
+      width: 60%;
+    }
 
     .split-legend {
       display: flex;
@@ -1002,6 +1173,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <!-- ========================================================
@@ -1051,7 +1223,8 @@
       <!-- Right Visual Frame -->
       <div class="cover-right">
         <div class="hero-image-frame">
-          <img src="file:///Users/macbook/Desktop/igrid/ezforme/public/ezforme_hero.jpg" alt="ezForme Smart Hub & Cloud Print">
+          <img src="file:///Users/macbook/Desktop/igrid/ezforme/public/ezforme_hero.jpg"
+            alt="ezForme Smart Hub & Cloud Print">
           <div class="hero-overlay-tag">
             <div style="display: flex; align-items: center; gap: 8px;">
               <span style="font-size: 14px;">🖨️</span>
@@ -1070,7 +1243,7 @@
         <span>•</span>
         <span>아이그리드 (IGRID)</span>
       </div>
-      <div class="page-number">01 / 08</div>
+      <div class="page-number">01 / 09</div>
     </div>
   </section>
 
@@ -1098,7 +1271,8 @@
         <div class="genesis-content">
           <div class="genesis-title">구상 배경 (The Genesis Story)</div>
           <div class="genesis-desc">
-            "외래 방문자로서 스터디카페와 공유오피스에서 과제물 1~2장을 출력하려다 <strong>300MB 드라이버 검색, IP 설정, 설치 오류로 20분을 허비하고 분통을 터뜨렸던 1인 기업가의 실제 고통</strong>에서 출발했습니다."
+            "외래 방문자로서 스터디카페와 공유오피스에서 과제물 1~2장을 출력하려다 <strong>300MB 드라이버 검색, IP 설정, 설치 오류로 20분을 허비하고 분통을 터뜨렸던 1인 기업가의 실제
+              고통</strong>에서 출발했습니다."
           </div>
         </div>
       </div>
@@ -1171,7 +1345,7 @@
         <span>•</span>
         <span>아이그리드 (IGRID)</span>
       </div>
-      <div class="page-number">02 / 08</div>
+      <div class="page-number">02 / 09</div>
     </div>
   </section>
 
@@ -1194,7 +1368,8 @@
 
     <div class="slide-body">
       <!-- Core Value Proposition Header -->
-      <div style="margin-bottom: 14px; background: #f0f9ff; border-left: 4px solid #0284c7; padding: 10px 16px; border-radius: 0 10px 10px 0; word-break: keep-all;">
+      <div
+        style="margin-bottom: 14px; background: #f0f9ff; border-left: 4px solid #0284c7; padding: 10px 16px; border-radius: 0 10px 10px 0; word-break: keep-all;">
         <span style="font-size: 14px; font-weight: 800; color: #0f172a;">💡 솔루션 정의:</span>
         <span style="font-size: 13px; color: #334155; margin-left: 6px;">
           수백만 원 복합기도, 관리 힘든 공용 PC도 필요 없습니다. <strong>매장에 이미 있는 일반 프린터 USB에 스마트 허브만 꽂으면 즉시 무인 클라우드 스테이션 완성!</strong>
@@ -1271,17 +1446,138 @@
         <span>•</span>
         <span>아이그리드 (IGRID)</span>
       </div>
-      <div class="page-number">03 / 08</div>
+      <div class="page-number">03 / 09</div>
     </div>
   </section>
 
   <!-- ========================================================
-       SLIDE 4: PRODUCT EXPERIENCE & ARCHITECTURE (하단 항목 분리)
+       SLIDE 4: STRATEGIC INSIGHT & THE END OF PUBLIC PCS (신규 슬라이드)
        ======================================================== -->
   <section class="slide">
     <div class="slide-header">
       <div>
-        <div class="category-badge">03. PRODUCT EXPERIENCE & ARCHITECTURE</div>
+        <div class="category-badge">03. STRATEGIC INSIGHT & PARADIGM SHIFT</div>
+        <h2 class="slide-title">
+          "이미 PC가 연결되어 있는데 쓸까요?" <span class="highlight">공용 PC의 역설과 필연적 전환</span>
+        </h2>
+      </div>
+      <div class="brand-mark">
+        <div class="brand-mark-logo">e</div>
+        ezForme IR
+      </div>
+    </div>
+
+    <div class="slide-body">
+      <!-- Top Insight Banner -->
+      <div class="insight-banner">
+        <div class="insight-badge">Q&A INSIGHT</div>
+        <div class="insight-text">
+          <strong>핵심 의문에 대한 전략적 해답:</strong> 공용 PC는 ezForme의 대체재가 아닙니다. <strong>USB 부재 시의 로그인 마찰·자리 독점·개인정보 유출 불안을 유발하는
+            제거 대상(Pain Point)</strong>입니다.
+        </div>
+      </div>
+
+      <!-- 2-Column Comparison: Customer Why vs Operator Why -->
+      <div class="grid-2" style="margin-bottom: 10px;">
+        <!-- Column 1: Customer Perspective -->
+        <div class="solution-card">
+          <div class="card-title">
+            <span style="font-size: 16px;">👤</span>
+            <span>손님이 공용 PC 대신 ezForme 모바일로 직행하는 이유</span>
+          </div>
+          <div class="solution-item">
+            <div class="solution-bullet green">1</div>
+            <div>
+              <strong>개인정보 유출 공포 원천 차단 (Zero-Trace)</strong><br>
+              타인이 만지는 PC에 카톡·포털 로그인 시 겪는 불안감 및 다운로드 폴더 등본·이력서 방치 위험 제로. 출력 후 즉시 영구 파기(Shred).
+            </div>
+          </div>
+          <div class="solution-item">
+            <div class="solution-bullet green">2</div>
+            <div>
+              <strong>USB 복사·카톡 로그인 번거로움 해소 (Frictionless)</strong><br>
+              USB 메모리가 없어도 [PC 켜기 ➔ 카톡 로그인 ➔ 2단계 인증 ➔ 다운로드 ➔ 로그아웃] 과정 없이 스마트폰 카메라 QR로 즉시 출력.
+            </div>
+          </div>
+          <div class="solution-item">
+            <div class="solution-bullet green">3</div>
+            <div>
+              <strong>공용 PC 독점 및 대기열 탈출 (No Queue & BYOD)</strong><br>
+              앞사람이 과제 작성·웹서핑으로 1대뿐인 PC를 독점해도 줄 서서 기다릴 필요 없이, 내 좌석이나 소파에서 모바일로 즉시 전송 후 수령.
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 2: Operator Perspective -->
+        <div class="solution-card highlight-blue">
+          <div class="card-title">
+            <span style="font-size: 16px;">🏪</span>
+            <span>점주가 골칫거리 공용 PC를 치우고 ezForme을 원하는 이유</span>
+          </div>
+          <div class="solution-item">
+            <div class="solution-bullet blue">1</div>
+            <div>
+              <strong>무인 매장 민원 및 관리 스트레스 박멸 (Zero-Complaint)</strong><br>
+              "앞사람이 PC를 안 비켜줘요", "바이러스 걸렸어요" 등 무인 매장을 깨뜨리는 잦은 문의·항의 전화 100% 제거. 점주 관리 스트레스 해방.
+            </div>
+          </div>
+          <div class="solution-item">
+            <div class="solution-bullet blue">2</div>
+            <div>
+              <strong>용지·토너 무단 사적 낭비 방지 (100% 자동 과금)</strong><br>
+              무료 개방 PC로 인한 수백 장 대량 인쇄 먹튀 방지. 장당 100원 자동 과금으로 점주 무인 부가수익 전환(점주 60% 정산).
+            </div>
+          </div>
+          <div class="solution-item">
+            <div class="solution-bullet blue">3</div>
+            <div>
+              <strong>공용 PC 유지관리비 및 공간 회수 (Cost-Down)</strong><br>
+              24시간 PC 전기세, 키보드/마우스 잦은 파손, PC 복구 프로그램 관리 부담 제로. 불필요한 PC 카운터를 치워 매장 유효 면적 확보.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Penetration Architecture Box -->
+      <div class="penetration-box">
+        <div class="penetration-header">
+          <span style="font-weight: 800; color: #0f172a; font-size: 12px;">🚀 시장 침투 전략: 매장의 PC 유무와 상관없이 100% 흡수하는 하이브리드
+            아키텍처</span>
+          <span class="pill-tag pill-info" style="height: 22px; font-size: 10px;">Zero-Friction Market
+            Penetration</span>
+        </div>
+        <div class="penetration-grid">
+          <div class="penetration-item">
+            <span class="penetration-case">CASE A. PC를 유지하려는 매장</span>
+            <span class="penetration-desc"><strong>플랫폼 초기 투자비 0원:</strong> 기존 PC에 10MB 에이전트만 설치하여, 라즈베리파이 단말기 보급 원가 없이
+              0원으로 즉시 가맹점 확장!</span>
+          </div>
+          <div class="penetration-item">
+            <span class="penetration-case green">CASE B. PC를 없애려는 매장</span>
+            <span class="penetration-desc"><strong>초소형 스마트 허브 무상 제공:</strong> 본사가 사전 세팅한 3만 원 초소형 허브를 무상 제공하여, 점주 부담
+              0원으로 공용 PC 완전 폐기 & 순수 무인화!</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <div class="confidential">
+        <span>🔒 STRICTLY CONFIDENTIAL</span>
+        <span>•</span>
+        <span>아이그리드 (IGRID)</span>
+      </div>
+      <div class="page-number">04 / 09</div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       SLIDE 5: PRODUCT EXPERIENCE & ARCHITECTURE (하단 항목 분리)
+       ======================================================== -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="category-badge">04. PRODUCT EXPERIENCE & ARCHITECTURE</div>
         <h2 class="slide-title">
           어떻게 작동하는가? <span class="highlight">3단계 초간편 UX와 클라우드 릴레이 기술</span>
         </h2>
@@ -1324,7 +1620,8 @@
       <!-- Cloud Relay Architecture Card -->
       <div class="arch-diagram-card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <span style="font-size: 13.5px; font-weight: 800; color: #0f172a;">🏗️ ezForme 클라우드 우편 릴레이 아키텍처 (Cloud Relay Engine)</span>
+          <span style="font-size: 13.5px; font-weight: 800; color: #0f172a;">🏗️ ezForme 클라우드 우편 릴레이 아키텍처 (Cloud Relay
+            Engine)</span>
           <span class="pill-tag pill-success">방화벽 인바운드 개방 불필요 (0-Config)</span>
         </div>
 
@@ -1378,17 +1675,17 @@
         <span>•</span>
         <span>아이그리드 (IGRID)</span>
       </div>
-      <div class="page-number">04 / 08</div>
+      <div class="page-number">05 / 09</div>
     </div>
   </section>
 
   <!-- ========================================================
-       SLIDE 5: TARGET MARKET & EVIDENCE-BASED SCALE
+       SLIDE 6: TARGET MARKET & EVIDENCE-BASED SCALE
        ======================================================== -->
   <section class="slide">
     <div class="slide-header">
       <div>
-        <div class="category-badge">04. TARGET MARKET & VERIFIABLE SCALE</div>
+        <div class="category-badge">05. TARGET MARKET & VERIFIABLE SCALE</div>
         <h2 class="slide-title">
           타겟 시장: <span class="highlight">공식 데이터로 검증된 전국 10,000+개 오프라인 거점</span>
         </h2>
@@ -1470,17 +1767,17 @@
         <span>•</span>
         <span>아이그리드 (IGRID)</span>
       </div>
-      <div class="page-number">05 / 08</div>
+      <div class="page-number">06 / 09</div>
     </div>
   </section>
 
   <!-- ========================================================
-       SLIDE 6: BUSINESS MODEL & UNIT ECONOMICS
+       SLIDE 7: BUSINESS MODEL & UNIT ECONOMICS
        ======================================================== -->
   <section class="slide">
     <div class="slide-header">
       <div>
-        <div class="category-badge">05. BUSINESS MODEL & ECONOMICS</div>
+        <div class="category-badge">06. BUSINESS MODEL & ECONOMICS</div>
         <h2 class="slide-title">
           수익 모델: <span class="highlight">Asset-Light 고마진 2-Track 비즈니스 모델</span>
         </h2>
@@ -1506,7 +1803,7 @@
             <span class="bm-price-big">100원 ~ 300원</span>
             <span class="bm-price-unit">/ 흑백(100원), 컬러(300원) 장당 과금</span>
           </div>
-          
+
           <div class="bm-split-bar">
             <div class="split-platform"></div>
             <div class="split-owner"></div>
@@ -1534,17 +1831,19 @@
             <span class="bm-price-unit">/ 공간 지점당 월 고정 구독료</span>
           </div>
 
-          <div style="margin: 8px 0 8px 0; padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
-            <div style="font-size: 11.5px; font-weight: 700; color: #0f172a; margin-bottom: 3px;">제공 기능:</div>
+          <div
+            style="margin: 8px 0 8px 0; padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
+            <div style="font-size: 11.5px; font-weight: 700; color: #0f172a; margin-bottom: 3px;">핵심 3대 가치 (공유오피스 최적화):
+            </div>
             <div style="font-size: 11px; color: #334155; line-height: 1.4; word-break: keep-all;">
-              • 입주사별 무료 크레딧 자동 차감 & 초과 과금 내역 실시간 집계<br>
-              • 월말 관리비 청구서 연동 원클릭 CSV 자동 정산 리포트<br>
-              • 외부 미팅 방문객 전용 즉시 결제 파이프라인
+              • <strong>맥북(macOS) 드라이버 설치 충돌 0초 해결</strong>: 웹 기반 무선 출력으로 입주사 온보딩 마찰 박멸<br>
+              • <strong>외부 방문객(게스트) 즉시 출력</strong>: 사내 보안망 접속 없이 카카오페이 1초 결제 파이프라인<br>
+              • <strong>월말 정산 원클릭 자동화</strong>: 입주사별 무료 쿼터 차감 및 초과분 합산 엑셀 리포트 0초 추출
             </div>
           </div>
 
           <div style="font-size: 11px; color: #475569; word-break: keep-all;">
-            매니저의 수동 검수 및 인쇄비 미납 스트레스를 100% 제거하는 필수 관리 솔루션.
+            수백만 원대 고가 MPS 도입이 어려운 전국 800+개 중소형 공유오피스를 위한 가벼운 필수 관리 SaaS.
           </div>
         </div>
       </div>
@@ -1576,17 +1875,17 @@
         <span>•</span>
         <span>아이그리드 (IGRID)</span>
       </div>
-      <div class="page-number">06 / 08</div>
+      <div class="page-number">07 / 09</div>
     </div>
   </section>
 
   <!-- ========================================================
-       SLIDE 7: COMPETITIVE ADVANTAGE & MOAT
+       SLIDE 8: COMPETITIVE ADVANTAGE & MOAT
        ======================================================== -->
   <section class="slide">
     <div class="slide-header">
       <div>
-        <div class="category-badge">06. COMPETITIVE ADVANTAGE</div>
+        <div class="category-badge">07. COMPETITIVE ADVANTAGE</div>
         <h2 class="slide-title">
           경쟁 우위: <span class="highlight">거대한 기계와 무거운 PC를 이기는 3대 해자(Moat)</span>
         </h2>
@@ -1677,17 +1976,17 @@
         <span>•</span>
         <span>아이그리드 (IGRID)</span>
       </div>
-      <div class="page-number">07 / 08</div>
+      <div class="page-number">08 / 09</div>
     </div>
   </section>
 
   <!-- ========================================================
-       SLIDE 8: ROADMAP & VISION
+       SLIDE 9: ROADMAP & VISION
        ======================================================== -->
   <section class="slide">
     <div class="slide-header">
       <div>
-        <div class="category-badge">07. ROADMAP & VISION</div>
+        <div class="category-badge">08. ROADMAP & VISION</div>
         <h2 class="slide-title">
           실행 로드맵: <span class="highlight">현장 실증에서 전국 500개 거점 독점으로</span>
         </h2>
@@ -1753,7 +2052,8 @@
       <!-- Vision & Contact Banner -->
       <div class="vision-banner">
         <div>
-          <div style="font-size: 11px; font-weight: 800; color: #0284c7; text-transform: uppercase; margin-bottom: 4px;">
+          <div
+            style="font-size: 11px; font-weight: 800; color: #0284c7; text-transform: uppercase; margin-bottom: 4px;">
             OUR GRAND VISION
           </div>
           <div class="vision-quote">
@@ -1779,9 +2079,10 @@
         <span>•</span>
         <span>아이그리드 (IGRID) All Rights Reserved.</span>
       </div>
-      <div class="page-number">08 / 08</div>
+      <div class="page-number">09 / 09</div>
     </div>
   </section>
 
 </body>
+
 </html>

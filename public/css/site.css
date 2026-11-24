@@ -233,3 +233,24 @@ body, h1, h2, h3, h4, h5, h6, p, span, li, td, th, label, small, strong, em, but
 .hero-copy {
   word-break: keep-all;
 }
+.pricing-actions-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: auto;
+}
+.checkout-summary-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #f5f6fb;
+  border: 1px solid #e2e5f3;
+}
+.checkout-summary-box > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}

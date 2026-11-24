@@ -382,15 +382,27 @@ ET`;
     });
   }
 
-  // B2B Tenant Select Handler
+  // B2B Tenant Select Handler & URL Query Preset (mode=guest, color=bw|color)
+  const urlParams = new URLSearchParams(window.location.search);
   const tenantSelect = document.getElementById('tenantSelect');
   if (tenantSelect) {
+    if (urlParams.get('mode') === 'guest') {
+      tenantSelect.value = '';
+    }
     printOptions.tenantCode = tenantSelect.value;
     tenantSelect.addEventListener('change', (e) => {
       printOptions.tenantCode = e.target.value;
       recalculatePrice();
     });
   }
+  const colorParam = urlParams.get('color');
+  if (colorParam === 'bw' || colorParam === 'color') {
+    printOptions.colorMode = colorParam;
+    document.querySelectorAll('.color-seg-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.val === colorParam);
+    });
+  }
+  recalculatePrice();
 
   // Monthly Reset Button Handler
   const btnResetMonthly = document.getElementById('btnResetMonthly');

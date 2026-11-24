@@ -213,11 +213,18 @@
       <div class="qr-title">📱 스마트폰 카메라로 비춰주세요</div>
       <div class="qr-desc">별도 앱 설치 없이 기본 카메라 앱으로 촬영하시면 됩니다.</div>
       <div class="qr-frame">
-        <img src="/qr_wifi_page.png?v=live2" alt="Wi-Fi 1분 설정 QR" class="qr-image">
+        <img id="wifiSetupQr" alt="Wi-Fi 1분 설정 QR" class="qr-image">
       </div>
       <div class="qr-note">※ QR 인식 시 자동으로 [매장 Wi-Fi 연결 페이지]가 열립니다.</div>
-      <div style="margin-top:6px; font-size:12px; font-weight:700; color:#2563eb; letter-spacing:0.2px;">http://192.168.45.195:3456/setup-wifi.html</div>
+      <div id="wifiSetupUrl" style="margin-top:6px; font-size:12px; font-weight:700; color:#2563eb; letter-spacing:0.2px;"></div>
     </div>
+    <script>
+      (function () {
+        var targetUrl = window.location.origin + '/setup-wifi.html';
+        document.getElementById('wifiSetupQr').src = '/api/qr?url=' + encodeURIComponent(targetUrl);
+        document.getElementById('wifiSetupUrl').textContent = targetUrl;
+      })();
+    </script>
 
     <div class="footer">
       <span>아이그리드 (iGrid) | ezForme 파트너스</span>
