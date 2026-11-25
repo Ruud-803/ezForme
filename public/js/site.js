@@ -64,10 +64,41 @@ if (signupForm) {
   });
 }
 
-// Guest Checkout (Non-member PG payment path for B2B plans)
+// Guest Checkout (Non-member PG payment path for B2B plans using v2 Payment Widget)
 const guestCheckoutDialog = document.getElementById('guestCheckoutDialog');
 const guestCheckoutForm = document.getElementById('guestCheckoutForm');
 let selectedPlan = { id: 'standard', name: 'ezForme B2B 스탠다드 월 구독', amount: 39000 };
+let b2bWidgets = null;
+
+async function mountB2BPaymentWidget(amount) {
+  const statusEl = document.getElementById('guestCheckoutStatus');
+  const methodsEl = document.getElementById('b2bPaymentMethods');
+  const agreementEl = document.getElementById('b2bAgreement');
+  if (!methodsEl || !agreementEl) return;
+
+  methodsEl.innerHTML = '';
+  agreementEl.innerHTML = '';
+  if (statusEl) statusEl.textContent = '결제 수단 및 약관을 불러오는 중...';
+
+  try {
+    const cfgRes = await fetch('/api/config');
+    const cfg = await cfgRes.json();
+    const clientKey = cfg.tossClientKey || 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm';
+    if (typeof TossPayments === 'undefined') {
+      throw new Error('결제 모듈(PG SDK)을 불러오지 못했습니다.');
+    }
+    const tossPayments = TossPayments(clientKey);
+    b2bWidgets = tossPayments.widgets({ customerKey: TossPayments.ANONYMOUS });
+    await b2bWidgets.setAmount({ currency: 'KRW', value: amount });
+    await Promise.all([
+      b2bWidgets.renderPaymentMethods({ selector: '#b2bPaymentMethods', variantKey: 'DEFAULT' }),
+      b2bWidgets.renderAgreement({ selector: '#b2bAgreement', variantKey: 'AGREEMENT' })
+    ]);
+    if (statusEl) statusEl.textContent = '';
+  } catch (err) {
+    if (statusEl) statusEl.textContent = err?.message || '결제 수단 초기화 중 오류가 발생했습니다.';
+  }
+}
 
 document.querySelectorAll('[data-guest-checkout]').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -78,11 +109,10 @@ document.querySelectorAll('[data-guest-checkout]').forEach(btn => {
     };
     const nameEl = document.getElementById('checkoutPlanName');
     const priceEl = document.getElementById('checkoutPlanPrice');
-    const statusEl = document.getElementById('guestCheckoutStatus');
     if (nameEl) nameEl.textContent = selectedPlan.name;
     if (priceEl) priceEl.textContent = `${selectedPlan.amount.toLocaleString('ko-KR')}원`;
-    if (statusEl) statusEl.textContent = '';
     guestCheckoutDialog?.showModal();
+    mountB2BPaymentWidget(selectedPlan.amount);
   });
 });
 
@@ -94,22 +124,19 @@ guestCheckoutForm?.addEventListener('submit', async event => {
   const customerPhone = document.getElementById('checkoutCustomerPhone')?.value.trim() || '';
   const customerEmail = document.getElementById('checkoutCustomerEmail')?.value.trim() || '';
 
+  if (!b2bWidgets) {
+    if (statusEl) statusEl.textContent = '결제 수단을 불러오는 중입니다. 잠시 후 다시 시도해 주세요.';
+    return;
+  }
+
   if (submitBtn) submitBtn.disabled = true;
-  if (statusEl) statusEl.textContent = '결제창을 불러오는 중입니다...';
+  if (statusEl) statusEl.textContent = '결제창을 호출하는 중입니다...';
 
   try {
-    const cfgRes = await fetch('/api/config');
-    const cfg = await cfgRes.json();
-    const clientKey = cfg.tossClientKey || 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm';
-    if (typeof TossPayments === 'undefined') {
-      throw new Error('결제 모듈(PG SDK)을 불러오지 못했습니다.');
-    }
-    const tossPayments = TossPayments(clientKey);
     const orderId = `EZF_B2B_${selectedPlan.id.toUpperCase()}_${Date.now().toString(36)}`;
     const origin = window.location.origin;
 
-    await tossPayments.requestPayment('카드', {
-      amount: selectedPlan.amount,
+    await b2bWidgets.requestPayment({
       orderId,
       orderName: selectedPlan.name,
       customerName,

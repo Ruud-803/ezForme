@@ -117,10 +117,84 @@ async function initTossPayments() {
   if (window.TossPayments) {
     try {
       tossPayments = TossPayments(tossClientKey);
-      console.log('✅ [ezForme] Toss Payments SDK Ready (Client Key:', tossClientKey, ')');
+      console.log('✅ [ezForme] PG SDK v2 Ready (Client Key:', tossClientKey, ')');
     } catch (e) {
-      console.error('Toss Payments init error:', e);
+      console.error('PG SDK init error:', e);
     }
+  }
+}
+
+async function openB2CPaymentWidgetModal(job) {
+  let modal = document.getElementById('b2cPaymentModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'b2cPaymentModal';
+    modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(2,6,23,0.78);display:flex;align-items:center;justify-content:center;padding:16px;';
+    modal.innerHTML = `
+      <div style="width:100%;max-width:480px;max-height:92vh;overflow-y:auto;background:#ffffff;color:#0f172a;border-radius:16px;padding:20px;box-shadow:0 24px 60px rgba(0,0,0,0.45);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <strong style="font-size:17px;">💳 비회원 즉시 결제</strong>
+          <button type="button" id="b2cModalClose" style="border:none;background:#f1f5f9;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;">✕</button>
+        </div>
+        <div id="b2cOrderSummary" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;font-size:13px;margin-bottom:12px;"></div>
+        <div id="b2cPaymentMethods"></div>
+        <div id="b2cAgreement"></div>
+        <p id="b2cPaymentStatus" style="font-size:12px;color:#dc2626;min-height:18px;margin:8px 0;"></p>
+        <button type="button" id="b2cConfirmPayBtn" style="width:100%;padding:14px;border:none;border-radius:10px;background:#3182f6;color:#fff;font-weight:700;font-size:15px;cursor:pointer;">결제창 열기 (카드·간편결제)</button>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    document.getElementById('b2cModalClose').addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+  }
+
+  modal.style.display = 'flex';
+  const summaryEl = document.getElementById('b2cOrderSummary');
+  const methodsEl = document.getElementById('b2cPaymentMethods');
+  const agreementEl = document.getElementById('b2cAgreement');
+  const statusEl = document.getElementById('b2cPaymentStatus');
+  const confirmBtn = document.getElementById('b2cConfirmPayBtn');
+
+  summaryEl.innerHTML = `<b>${job.originalName || '인쇄문서'}</b> (${job.totalPages}매) &nbsp;|&nbsp; <span style="color:#2563eb;font-weight:700;">${Number(job.totalPrice).toLocaleString()}원</span>`;
+  methodsEl.innerHTML = '';
+  agreementEl.innerHTML = '';
+  statusEl.textContent = '결제 수단을 불러오는 중...';
+  confirmBtn.disabled = true;
+
+  try {
+    const widgets = tossPayments.widgets({ customerKey: TossPayments.ANONYMOUS });
+    await widgets.setAmount({ currency: 'KRW', value: Number(job.totalPrice) });
+    await Promise.all([
+      widgets.renderPaymentMethods({ selector: '#b2cPaymentMethods', variantKey: 'DEFAULT' }),
+      widgets.renderAgreement({ selector: '#b2cAgreement', variantKey: 'AGREEMENT' })
+    ]);
+    statusEl.textContent = '';
+    confirmBtn.disabled = false;
+
+    confirmBtn.onclick = async () => {
+      confirmBtn.disabled = true;
+      statusEl.textContent = '신용카드 결제창 호출 중...';
+      try {
+        const safeOrderId = 'EZF_' + job.id.replace(/[^a-zA-Z0-9_-]/g, '') + '_' + Date.now().toString(36);
+        const currentOrigin = window.location.origin;
+        await widgets.requestPayment({
+          orderId: safeOrderId,
+          orderName: `${job.originalName || '인쇄문서'} (${job.totalPages}매 출력)`,
+          customerName: 'ezForme 비회원 이용자',
+          successUrl: `${currentOrigin}/payment/success?jobId=${job.id}`,
+          failUrl: `${currentOrigin}/payment/fail?jobId=${job.id}`
+        });
+      } catch (err) {
+        statusEl.textContent = err?.code === 'USER_CANCEL'
+          ? '결제가 취소되었습니다.'
+          : (err?.message || '결제창 호출 중 오류가 발생했습니다.');
+        confirmBtn.disabled = false;
+      }
+    };
+  } catch (err) {
+    statusEl.textContent = err?.message || '결제 위젯을 불러오지 못했습니다.';
+    confirmBtn.disabled = false;
   }
 }
 
@@ -544,43 +618,21 @@ async function submitPrintJob() {
     if (job.status === 'PAID') {
       showMobilePinResult(job);
     } else {
-      // Real Toss Payments Checkout Window
+      // Real PG Payment Widget Modal (v2 SDK)
       btnSubmit.innerHTML = '<span>💳 PG 결제창 여는 중...</span>';
 
-      if (tossPayments) {
-        try {
-          const safeOrderId = 'EZF_' + job.id.replace(/[^a-zA-Z0-9_-]/g, '') + '_' + Date.now().toString(36);
-          const currentOrigin = window.location.origin;
-
-          await tossPayments.requestPayment('카드', {
-            amount: job.totalPrice,
-            orderId: safeOrderId,
-            orderName: `${job.originalName || '인쇄문서'} (${job.totalPages}매 출력)`,
-            customerName: 'ezForme 이용자',
-            successUrl: `${currentOrigin}/payment/success?jobId=${job.id}`,
-            failUrl: `${currentOrigin}/payment/fail?jobId=${job.id}`
-          });
-        } catch (tossErr) {
-          console.error('Toss Payments Modal Error/Cancelled:', tossErr);
-          btnSubmit.disabled = false;
-          recalculatePrice();
-          if (tossErr.code === 'USER_CANCEL') {
-            btnSubmit.innerHTML = '<span>⚡ 간편결제 & 인쇄 요청</span>';
-          } else {
-            alert('토스 결제 오류: ' + (tossErr.message || '다시 시도해주세요.'));
-          }
-          return;
-        }
+      if (tossPayments && typeof tossPayments.widgets === 'function') {
+        await openB2CPaymentWidgetModal(job);
       } else {
-        // Fallback simulation if Toss Payments SDK not loaded
-        console.warn('Toss Payments SDK not available, falling back to mock approval');
+        // Fallback simulation if PG SDK not loaded
+        console.warn('PG SDK not available, falling back to mock approval');
         btnSubmit.innerHTML = '<span>💳 결제 승인 중...</span>';
         const payRes = await fetch(`/api/jobs/${job.id}/pay`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ method: 'tosspayments_card' })
+          body: JSON.stringify({ method: 'pg_card' })
         });
-        const payData = await payRes.json();
+        await payRes.json();
         showMobilePinResult(job);
       }
     }
