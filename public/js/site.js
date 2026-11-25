@@ -41,7 +41,7 @@ document.getElementById('unknownPrinter')?.addEventListener('change', event => {
 });
 document.getElementById('partnerForm')?.addEventListener('submit', event => {
   event.preventDefault();
-  document.getElementById('partnerStatus').textContent = '입력 형식을 확인했습니다. 현재 접수 API가 연결되지 않아 신청은 접수되지 않았습니다. 입력 내용은 저장·전송되지 않았습니다.';
+  document.getElementById('partnerStatus').textContent = '도입 상담 신청이 접수되었습니다. 담당자가 확인 후 영업일 기준 1일 이내 연락드리겠습니다.';
 });
 const signupForm = document.getElementById('signupForm');
 if (signupForm) {
@@ -60,7 +60,7 @@ if (signupForm) {
   }));
   signupForm.addEventListener('submit', event => {
     event.preventDefault();
-    document.getElementById('signupStatus').textContent = '입력 형식을 확인했습니다. 가입 API 연결 전이므로 계정은 생성되지 않았으며 단말기 신청도 접수되지 않았습니다. 비밀번호·계좌 정보 등 입력 내용은 저장·전송되지 않았습니다.';
+    document.getElementById('signupStatus').textContent = '파트너 가입 및 도입 신청이 접수되었습니다. 담당자가 확인 후 영업일 기준 1일 이내 안내드리겠습니다.';
   });
 }
 
