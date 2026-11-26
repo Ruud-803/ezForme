@@ -129,27 +129,29 @@
 </main>
 <footer class="footer"><div class="wrap"><div class="footer-top"><div><a class="brand" href="/"><span class="brand-mark">e</span>ezForme.</a><p>Make printing the easiest part of your day.<br>공유오피스와 스터디카페를 위한 제로 드라이버 클라우드 무인 프린팅 &amp; B2B SaaS 솔루션</p></div><div class="footer-links"><a href="/terms">서비스 이용약관</a><a href="/privacy">개인정보처리방침</a><a href="#pricing">요금 안내</a><a href="#partner-inquiry">도입 문의</a><a href="/admin">점주 콘솔 ↗</a></div></div><div class="footer-bottom"><div class="footer-info"><p><strong>아이그리드 (IGRID)</strong> &nbsp;|&nbsp; 대표: 마성균 &nbsp;|&nbsp; 개인정보보호책임자: 마성균</p><p><span>사업자등록번호: 468-30-02050 <a href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=4683002050" target="_blank" rel="noopener noreferrer" class="biz-info-link">[사업자정보확인 ↗]</a></span><span class="sep">|</span><span>통신판매업신고번호: 2026-서울서대문-1070호</span></p><p><span>사업장 주소: 서울특별시 서대문구 모래내로 309</span><span class="sep">|</span><span>유선/고객센터: 010-3180-1105</span><span class="sep">|</span><span>이메일: <a href="mailto:ruud.igrid@gmail.com" style="color:inherit;text-decoration:underline;">ruud.igrid@gmail.com</a></span></p><p class="copyright">© 2026 IGRID. All rights reserved.</p></div></div></div></footer>
 <dialog class="dialog" id="privacyDialog"><div class="dialog-header"><h2>개인정보처리 안내</h2><button type="button" class="icon-button" data-close aria-label="닫기">✕</button></div><p>수집 항목: 매장명, 성함, 연락처, 프린터 기종 및 문의 내용</p><p>수집 목적: ezForme 단말기 도입 상담 및 설치 지원 안내 (보유 기간: 상담 완료 후 1년, 동의 거부 시 상담 접수가 제한될 수 있습니다.)</p><p>자세한 내용은 하단 <a href="/privacy" class="text-link">개인정보처리방침</a>을 확인해 주세요.</p></dialog>
-<dialog class="dialog" id="guestCheckoutDialog" aria-labelledby="guestCheckoutTitle">
-  <div class="dialog-header">
-    <h2 id="guestCheckoutTitle">비회원 즉시 결제</h2>
-    <button type="button" class="icon-button" data-close aria-label="닫기">✕</button>
-  </div>
-  <p class="micro" style="margin:0 0 14px;color:var(--blue);font-weight:600">✓ 별도의 회원가입·로그인 없이 비회원으로 바로 결제하실 수 있습니다.</p>
-  <div class="checkout-summary-box">
-    <div><span class="micro">선택 상품</span><strong id="checkoutPlanName">ezForme B2B 스탠다드 월 구독</strong></div>
-    <div style="text-align:right"><span class="micro">결제 금액</span><strong id="checkoutPlanPrice" style="color:var(--blue);font-size:20px">39,000원</strong></div>
-  </div>
-  <form id="guestCheckoutForm" class="form-grid" style="margin-top:16px">
-    <label>주문자명 (비회원)<input id="checkoutCustomerName" name="customerName" value="비회원 고객" placeholder="성함 또는 매장명" required maxlength="50"></label>
-    <label>연락처<input id="checkoutCustomerPhone" name="customerPhone" type="tel" value="010-0000-0000" placeholder="010-0000-0000" required></label>
-    <label class="span-two">결제 영수증 수신 이메일<input id="checkoutCustomerEmail" name="customerEmail" type="email" value="guest@ezforme.kr" placeholder="you@company.com" required></label>
-    <div id="b2bPaymentMethods" class="span-two" style="min-height:120px"></div>
-    <div id="b2bAgreement" class="span-two"></div>
-    <label class="checkbox-label span-two"><input type="checkbox" id="checkoutAgreeTerms" checked required><span><a href="/terms" target="_blank" class="text-link">서비스 이용약관</a> 및 월 정기결제·환불 규정을 확인했으며 비회원 결제에 동의합니다.</span></label>
-    <div class="span-two" style="margin-top:6px">
-      <button type="submit" id="btnGuestPaySubmit" class="button full">신용카드·간편결제로 비회원 결제하기 <span>↗</span></button>
-      <p id="guestCheckoutStatus" class="form-status" role="status"></p>
+<div class="guest-modal-backdrop" id="guestCheckoutDialog" role="dialog" aria-modal="true" aria-labelledby="guestCheckoutTitle" hidden>
+  <div class="dialog guest-modal-card">
+    <div class="dialog-header">
+      <h2 id="guestCheckoutTitle">비회원 즉시 결제</h2>
+      <button type="button" class="icon-button" data-close-guest aria-label="닫기">✕</button>
     </div>
-  </form>
-</dialog>
+    <p class="micro" style="margin:0 0 14px;color:var(--blue);font-weight:600">✓ 별도의 회원가입·로그인 없이 비회원으로 바로 결제하실 수 있습니다.</p>
+    <div class="checkout-summary-box">
+      <div><span class="micro">선택 상품</span><strong id="checkoutPlanName">ezForme B2B 스탠다드 월 구독</strong></div>
+      <div style="text-align:right"><span class="micro">결제 금액</span><strong id="checkoutPlanPrice" style="color:var(--blue);font-size:20px">39,000원</strong></div>
+    </div>
+    <form id="guestCheckoutForm" class="form-grid" style="margin-top:16px">
+      <label>주문자명 (비회원)<input id="checkoutCustomerName" name="customerName" value="비회원 고객" placeholder="성함 또는 매장명" required maxlength="50"></label>
+      <label>연락처<input id="checkoutCustomerPhone" name="customerPhone" type="tel" value="010-1234-5678" placeholder="010-1234-5678" required></label>
+      <label class="span-two">결제 영수증 수신 이메일<input id="checkoutCustomerEmail" name="customerEmail" type="email" value="guest@ezforme.kr" placeholder="you@company.com" required></label>
+      <div id="b2bPaymentMethods" class="span-two" style="min-height:120px"></div>
+      <div id="b2bAgreement" class="span-two"></div>
+      <label class="checkbox-label span-two"><input type="checkbox" id="checkoutAgreeTerms" checked required><span><a href="/terms" target="_blank" class="text-link">서비스 이용약관</a> 및 월 정기결제·환불 규정을 확인했으며 비회원 결제에 동의합니다.</span></label>
+      <div class="span-two" style="margin-top:6px">
+        <button type="submit" id="btnGuestPaySubmit" class="button full">신용카드·간편결제로 비회원 결제하기 <span>↗</span></button>
+        <p id="guestCheckoutStatus" class="form-status" role="status"></p>
+      </div>
+    </form>
+  </div>
+</div>
 </body></html>

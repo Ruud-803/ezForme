@@ -129,7 +129,7 @@ async function openB2CPaymentWidgetModal(job) {
   if (!modal) {
     modal = document.createElement('div');
     modal.id = 'b2cPaymentModal';
-    modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(2,6,23,0.78);display:flex;align-items:center;justify-content:center;padding:16px;';
+    modal.style.cssText = 'position:fixed;inset:0;z-index:100;background:rgba(2,6,23,0.78);display:flex;align-items:center;justify-content:center;padding:16px;';
     modal.innerHTML = `
       <div style="width:100%;max-width:480px;max-height:92vh;overflow-y:auto;background:#ffffff;color:#0f172a;border-radius:16px;padding:20px;box-shadow:0 24px 60px rgba(0,0,0,0.45);">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
@@ -175,6 +175,8 @@ async function openB2CPaymentWidgetModal(job) {
     confirmBtn.onclick = async () => {
       confirmBtn.disabled = true;
       statusEl.textContent = '신용카드 결제창 호출 중...';
+      // Hide modal so PG credit card window appears cleanly in front
+      modal.style.display = 'none';
       try {
         const safeOrderId = 'EZF_' + job.id.replace(/[^a-zA-Z0-9_-]/g, '') + '_' + Date.now().toString(36);
         const currentOrigin = window.location.origin;
@@ -186,6 +188,7 @@ async function openB2CPaymentWidgetModal(job) {
           failUrl: `${currentOrigin}/payment/fail?jobId=${job.id}`
         });
       } catch (err) {
+        modal.style.display = 'flex';
         statusEl.textContent = err?.code === 'USER_CANCEL'
           ? '결제가 취소되었습니다.'
           : (err?.message || '결제창 호출 중 오류가 발생했습니다.');

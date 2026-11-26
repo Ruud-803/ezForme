@@ -254,3 +254,23 @@ body, h1, h2, h3, h4, h5, h6, p, span, li, td, th, label, small, strong, em, but
   flex-direction: column;
   gap: 4px;
 }
+.guest-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(15, 23, 42, 0.56);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.guest-modal-backdrop[hidden] {
+  display: none;
+}
+.guest-modal-card {
+  width: 100%;
+  max-width: 540px;
+  max-height: 90vh;
+  overflow-y: auto;
+  margin: 0;
+}

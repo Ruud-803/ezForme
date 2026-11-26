@@ -100,6 +100,26 @@ async function mountB2BPaymentWidget(amount) {
   }
 }
 
+function openGuestModal() {
+  if (!guestCheckoutDialog) return;
+  guestCheckoutDialog.hidden = false;
+  document.body.style.overflow = 'hidden';
+}
+
+function closeGuestModal() {
+  if (!guestCheckoutDialog) return;
+  guestCheckoutDialog.hidden = true;
+  document.body.style.overflow = '';
+}
+
+document.querySelectorAll('[data-close-guest]').forEach(btn => {
+  btn.addEventListener('click', closeGuestModal);
+});
+
+guestCheckoutDialog?.addEventListener('click', event => {
+  if (event.target === guestCheckoutDialog) closeGuestModal();
+});
+
 document.querySelectorAll('[data-guest-checkout]').forEach(btn => {
   btn.addEventListener('click', () => {
     selectedPlan = {
@@ -111,7 +131,7 @@ document.querySelectorAll('[data-guest-checkout]').forEach(btn => {
     const priceEl = document.getElementById('checkoutPlanPrice');
     if (nameEl) nameEl.textContent = selectedPlan.name;
     if (priceEl) priceEl.textContent = `${selectedPlan.amount.toLocaleString('ko-KR')}원`;
-    guestCheckoutDialog?.showModal();
+    openGuestModal();
     mountB2BPaymentWidget(selectedPlan.amount);
   });
 });
@@ -121,7 +141,7 @@ guestCheckoutForm?.addEventListener('submit', async event => {
   const statusEl = document.getElementById('guestCheckoutStatus');
   const submitBtn = document.getElementById('btnGuestPaySubmit');
   const customerName = document.getElementById('checkoutCustomerName')?.value.trim() || '비회원 고객';
-  const customerPhone = document.getElementById('checkoutCustomerPhone')?.value.trim() || '';
+  const customerPhone = (document.getElementById('checkoutCustomerPhone')?.value || '').replace(/[^0-9]/g, '');
   const customerEmail = document.getElementById('checkoutCustomerEmail')?.value.trim() || '';
 
   if (!b2bWidgets) {
@@ -132,6 +152,9 @@ guestCheckoutForm?.addEventListener('submit', async event => {
   if (submitBtn) submitBtn.disabled = true;
   if (statusEl) statusEl.textContent = '결제창을 호출하는 중입니다...';
 
+  // Hide checkout modal so the PG credit card window is completely unobstructed
+  closeGuestModal();
+
   try {
     const orderId = `EZF_B2B_${selectedPlan.id.toUpperCase()}_${Date.now().toString(36)}`;
     const origin = window.location.origin;
@@ -141,11 +164,12 @@ guestCheckoutForm?.addEventListener('submit', async event => {
       orderName: selectedPlan.name,
       customerName,
       customerEmail: customerEmail || undefined,
-      customerMobilePhone: customerPhone.replace(/[^0-9]/g, '') || undefined,
+      customerMobilePhone: customerPhone.length >= 10 ? customerPhone : undefined,
       successUrl: `${origin}/mobile?mode=guest&b2bPaid=1`,
       failUrl: `${origin}/payment/fail`
     });
   } catch (err) {
+    openGuestModal();
     if (statusEl) {
       statusEl.textContent = err?.code === 'USER_CANCEL'
         ? '결제가 취소되었습니다. 언제든 다시 결제하실 수 있습니다.'
